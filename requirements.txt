@@ -1,0 +1,15 @@
+numpy>=1.24.0,<2.0.0
+scipy>=1.10.0
+opencv-python-headless>=4.8.0
+pydantic>=2.5.0
+pyyaml>=6.0.1
+loguru>=0.7.2
+pytest>=7.4.0
+pytest-cov>=4.1.0
+onnxruntime>=1.16.0
+paho-mqtt>=2.0.0
+aiosqlite>=0.19.0
+streamlit>=1.28.0
+pandas>=2.0.0
+pillow>=10.0.0
+matplotlib>=3.7.0

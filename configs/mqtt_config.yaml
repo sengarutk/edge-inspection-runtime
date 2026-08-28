@@ -1,0 +1,22 @@
+broker:
+  host: "localhost"
+  port: 1883
+  keepalive: 60
+  reconnect_delay_min_s: 1.0
+  reconnect_delay_max_s: 30.0
+  client_id_prefix: "edge_inspector"
+topics:
+  risk_events: "inspection/line1/risk"
+  telemetry: "inspection/line1/telemetry"
+  health: "inspection/line1/health"
+  heartbeat: "inspection/line1/heartbeat"
+qos:
+  risk_events: 1
+  telemetry: 0
+  health: 1
+  heartbeat: 0
+spooler:
+  db_path: "data/spooler_queue.db"
+  max_spool_records: 50000
+audit:
+  db_path: "data/audit_log.db"
