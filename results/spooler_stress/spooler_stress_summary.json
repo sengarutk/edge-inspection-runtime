@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-08-31T21:36:59Z",
+  "timestamp_utc": "2026-08-31T21:39:32Z",
   "total_runs": 12,
   "zero_loss_guaranteed_under_capacity": true,
   "runs": [
@@ -11,8 +11,8 @@
       "drained_records": 500,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 57450.25,
-      "drain_throughput_eps": 498257.11
+      "enqueue_throughput_eps": 56553.72,
+      "drain_throughput_eps": 728017.17
     },
     {
       "max_capacity_records": 1000,
@@ -22,8 +22,8 @@
       "drained_records": 1000,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 52931.09,
-      "drain_throughput_eps": 735617.57
+      "enqueue_throughput_eps": 55370.27,
+      "drain_throughput_eps": 819844.18
     },
     {
       "max_capacity_records": 1000,
@@ -33,8 +33,8 @@
       "drained_records": 1000,
       "lost_records": 1000,
       "loss_rate_pct": 50.0,
-      "enqueue_throughput_eps": 14045.89,
-      "drain_throughput_eps": 744204.33
+      "enqueue_throughput_eps": 14688.12,
+      "drain_throughput_eps": 626134.87
     },
     {
       "max_capacity_records": 5000,
@@ -44,19 +44,19 @@
       "drained_records": 500,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 56424.02,
-      "drain_throughput_eps": 699014.23
+      "enqueue_throughput_eps": 59146.53,
+      "drain_throughput_eps": 775225.04
     },
     {
       "max_capacity_records": 5000,
       "simulated_outage_seconds": 60,
       "enqueued_records": 1000,
-      "peak_queue_depth": 1523,
-      "drained_records": 1523,
+      "peak_queue_depth": 1000,
+      "drained_records": 1000,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 46142.99,
-      "drain_throughput_eps": 386482.21
+      "enqueue_throughput_eps": 49681.19,
+      "drain_throughput_eps": 497245.27
     },
     {
       "max_capacity_records": 5000,
@@ -66,8 +66,8 @@
       "drained_records": 2000,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 54087.99,
-      "drain_throughput_eps": 797186.24
+      "enqueue_throughput_eps": 38929.21,
+      "drain_throughput_eps": 712174.88
     },
     {
       "max_capacity_records": 10000,
@@ -77,8 +77,8 @@
       "drained_records": 500,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 60818.75,
-      "drain_throughput_eps": 766432.72
+      "enqueue_throughput_eps": 59479.93,
+      "drain_throughput_eps": 773052.03
     },
     {
       "max_capacity_records": 10000,
@@ -88,8 +88,8 @@
       "drained_records": 1000,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 54833.17,
-      "drain_throughput_eps": 791196.19
+      "enqueue_throughput_eps": 59276.98,
+      "drain_throughput_eps": 870442.48
     },
     {
       "max_capacity_records": 10000,
@@ -99,8 +99,8 @@
       "drained_records": 2000,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 53265.46,
-      "drain_throughput_eps": 782121.02
+      "enqueue_throughput_eps": 59651.33,
+      "drain_throughput_eps": 842687.52
     },
     {
       "max_capacity_records": 50000,
@@ -110,8 +110,8 @@
       "drained_records": 500,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 52272.76,
-      "drain_throughput_eps": 755547.22
+      "enqueue_throughput_eps": 50118.69,
+      "drain_throughput_eps": 498403.12
     },
     {
       "max_capacity_records": 50000,
@@ -121,8 +121,8 @@
       "drained_records": 1000,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 59322.81,
-      "drain_throughput_eps": 821560.38
+      "enqueue_throughput_eps": 60678.92,
+      "drain_throughput_eps": 720313.71
     },
     {
       "max_capacity_records": 50000,
@@ -132,8 +132,8 @@
       "drained_records": 2000,
       "lost_records": 0,
       "loss_rate_pct": 0.0,
-      "enqueue_throughput_eps": 55573.01,
-      "drain_throughput_eps": 834000.18
+      "enqueue_throughput_eps": 55657.35,
+      "drain_throughput_eps": 493432.05
     }
   ]
 }
