@@ -146,3 +146,79 @@ class PoissonBurstDefectGenerator:
     def generate_sequence(self, n_steps: int) -> List[bool]:
         """Generate sequence of Poisson burst defect indicators."""
         return [self.step() for _ in range(n_steps)]
+
+
+import cv2
+
+
+class MixedCorruptionStream:
+    """Simulates mixed optical, electrical, and compression noise on visual edge streams."""
+
+    def __init__(
+        self,
+        p_corrupt: float = 0.25,
+        noise_sigma: float = 25.0,
+        blur_kernel: int = 15,
+        jpeg_quality: int = 25,
+        seed: int = 42,
+    ) -> None:
+        """Initialize mixed corruption generator.
+
+        Args:
+            p_corrupt: Probability that a given frame is subjected to corruptions.
+            noise_sigma: Standard deviation of additive Gaussian noise.
+            blur_kernel: Kernel diameter for Gaussian optical defocus blur.
+            jpeg_quality: Quality factor (1-100) for lossy compression artifacts.
+            seed: Random seed for deterministic reproducibility.
+        """
+        self.p_corrupt = float(np.clip(p_corrupt, 0.0, 1.0))
+        self.noise_sigma = float(noise_sigma)
+        self.blur_k = blur_kernel if (blur_kernel % 2 == 1) else blur_kernel + 1
+        self.jpeg_q = int(np.clip(jpeg_quality, 5, 95))
+        self.rng = np.random.RandomState(seed)
+
+    def corrupt_frame(
+        self,
+        frame: np.ndarray,
+        step: Optional[int] = None,
+    ) -> Tuple[np.ndarray, List[str]]:
+        """Apply stochastic corruptions to an image frame.
+
+        Args:
+            frame: Input uint8 RGB image array (H, W, 3).
+            step: Optional cycle index for deterministic variation.
+
+        Returns:
+            Tuple of (corrupted_frame, list_of_applied_corruptions).
+        """
+        if self.p_corrupt <= 0.0 or frame is None:
+            return frame, []
+
+        local_rng = np.random.RandomState(step) if step is not None else self.rng
+        if local_rng.uniform(0.0, 1.0) > self.p_corrupt:
+            return frame.copy(), []
+
+        corrupted = frame.copy().astype(np.float32)
+        applied: List[str] = []
+
+        # 1. Stochastic Gaussian Noise (Sensor / RF interference)
+        if local_rng.uniform(0.0, 1.0) < 0.6:
+            noise = local_rng.normal(0.0, self.noise_sigma, size=frame.shape)
+            corrupted = np.clip(corrupted + noise, 0, 255)
+            applied.append("GAUSSIAN_NOISE")
+
+        result_frame = corrupted.astype(np.uint8)
+
+        # 2. Optical Motion / Defocus Blur (Lens vibration / dirt)
+        if local_rng.uniform(0.0, 1.0) < 0.5:
+            result_frame = cv2.GaussianBlur(result_frame, (self.blur_k, self.blur_k), 0)
+            applied.append("OPTICAL_BLUR")
+
+        # 3. JPEG Compression Artifacts (Edge bandwidth / bandwidth throttling)
+        if local_rng.uniform(0.0, 1.0) < 0.5:
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), self.jpeg_q]
+            _, encimg = cv2.imencode(".jpg", result_frame, encode_param)
+            result_frame = cv2.imdecode(encimg, 1)
+            applied.append("JPEG_COMPRESSION")
+
+        return result_frame, applied

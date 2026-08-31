@@ -1,6 +1,6 @@
 # Flagship 4: Industrial Edge Inspection Runtime & Reliability System
 
-[![Tests: Passing](https://img.shields.io/badge/Tests-113%2F113%20Passing-brightgreen.svg)](https://github.com/sengar/edge-inspection-runtime)
+[![Tests: Passing](https://img.shields.io/badge/Tests-118%2F118%20Passing-brightgreen.svg)](https://github.com/sengar/edge-inspection-runtime)
 [![Coverage: 93%+](https://img.shields.io/badge/Coverage-93%25-success.svg)](https://github.com/sengar/edge-inspection-runtime)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
