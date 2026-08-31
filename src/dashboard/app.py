@@ -54,6 +54,8 @@ st.set_page_config(
 
 CUSTOM_CSS = """
 <style>
+    a.header-anchor { display: none !important; }
+    [data-testid="stHeaderActionElements"] { display: none !important; }
     .metric-card {
         background-color: #1e2130;
         border-radius: 8px;
@@ -292,6 +294,16 @@ def restore_system_nominal(db: AuditLogDB) -> None:
     db.insert_system_health("current_sensor", "HEALTHY", "Current Sensor Nominal")
     db.insert_system_health("mqtt_broker", "CONNECTED", "Broker Connection Established (localhost:1883)")
 
+    # Purge any queued spooler items on nominal reconnect
+    try:
+        spooler = DiskSpooler()
+        with spooler._lock:
+            spooler._conn.execute("DELETE FROM spool_queue;")
+            spooler._conn.commit()
+        spooler.close()
+    except Exception:
+        pass
+
 
 def compute_dynamic_fmea(
     audit_db: AuditLogDB,
@@ -431,6 +443,26 @@ def main() -> None:
         st.sidebar.success(f"Generated {count} telemetry cycles & events!")
         st.rerun()
 
+    if st.sidebar.button("🧹 Reset & Clean Database", use_container_width=True):
+        with audit_db._lock:
+            audit_db._conn.execute("DELETE FROM risk_events;")
+            audit_db._conn.execute("DELETE FROM telemetry_stream;")
+            audit_db._conn.execute("DELETE FROM system_health;")
+            audit_db._conn.commit()
+
+        ev_dir = Path("data/evidence")
+        if ev_dir.is_dir():
+            for f in ev_dir.glob("*.png"):
+                try:
+                    f.unlink()
+                except Exception:
+                    pass
+
+        with st.spinner("Database wiped. Re-seeding pristine telemetry..."):
+            seed_demo_simulation(100, audit_db, evidence_mgr)
+        st.sidebar.success("Database wiped and re-seeded with pristine telemetry!")
+        st.rerun()
+
     st.sidebar.markdown("---")
     st.sidebar.subheader("System Metadata")
     st.sidebar.info(
@@ -473,29 +505,36 @@ def main() -> None:
 
         # Time Series Charts & Empty State Handling
         if recent_telemetry:
-            df_telem = pd.DataFrame(recent_telemetry).iloc[::-1].copy()
-            # Clean formatted timestamp string HH:MM:SS for sharp X-axis labels
-            df_telem["time_label"] = pd.to_datetime(df_telem["timestamp_utc"]).dt.strftime("%H:%M:%S")
+            # Chronological dataframe for charts
+            df_telem = pd.DataFrame(recent_telemetry).iloc[::-1].reset_index(drop=True)
+            total_pts = len(df_telem)
+            df_telem["Cycle"] = [f"Step {i+1}" for i in range(total_pts)]
 
             # Strip 1: Inspection Risk Trajectory & Anomaly Scores
             st.subheader("1. Inspection Risk Trajectory & Anomaly Scores")
-            risk_strip = df_telem.set_index("time_label")[["vision_score", "sensor_score"]]
+            risk_strip = df_telem.set_index("Cycle")[["vision_score", "sensor_score"]]
             st.line_chart(risk_strip)
 
-            # Strip 2: Thermal Dynamics Strip
+            # Strip 2: Thermal Dynamics Strip (°C)
             st.subheader("2. Thermal Dynamics Strip (°C)")
-            thermal_strip = df_telem.set_index("time_label")[["temperature_c"]]
+            thermal_strip = df_telem.set_index("Cycle")[["temperature_c"]]
             st.line_chart(thermal_strip)
 
-            # Strip 3: Electro-Mechanical Dynamics Strip
-            st.subheader("3. Electro-Mechanical Dynamics (Current & Vibration)")
-            mech_strip = df_telem.set_index("time_label")[["current_amps", "vibration_rms"]]
-            st.line_chart(mech_strip)
+            # Strip 3: Motor Current Draw (Amperes)
+            st.subheader("3. Motor Current Draw (Amperes)")
+            current_strip = df_telem.set_index("Cycle")[["current_amps"]]
+            st.line_chart(current_strip)
+
+            # Strip 4: 3-Axis Mechanical Vibration (g RMS)
+            st.subheader("4. 3-Axis Mechanical Vibration (g RMS)")
+            vib_strip = df_telem.set_index("Cycle")[["vibration_rms"]]
+            st.line_chart(vib_strip)
 
             st.markdown("---")
-            st.subheader("Recent Ingestion Stream (Last 15 Cycles)")
+            st.subheader("Recent Ingestion Stream (Newest First)")
 
-            display_df = df_telem.tail(15)[
+            # Reverse for newest-first table display
+            display_df = df_telem.iloc[::-1].head(15)[
                 [
                     "timestamp_utc",
                     "vision_score",
