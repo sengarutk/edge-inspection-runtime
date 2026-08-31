@@ -8,3 +8,14 @@ version: "0.3.0"
 date-released: "2026-08-31"
 repository-code: "https://github.com/sengarutk/edge-inspection-runtime"
 license: "MIT"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.10800000"
+    description: "Zenodo archive of edge-inspection-runtime research artifact"
+keywords:
+  - edge-ai
+  - industrial-inspection
+  - anomaly-detection
+  - temporal-policies
+  - queueing-models
+  - fault-tolerance
