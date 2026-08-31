@@ -1,10 +1,18 @@
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+# Guarantee project root is in sys.path when executed via `streamlit run`
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 """Industrial Edge Inspection Runtime - Operator Reliability & Triage Console.
 
 Production-grade Streamlit application providing real-time telemetry streaming,
 human-in-the-loop triage queue, active chaos engineering, and dynamic FMEA diagnostics.
 """
-
-from __future__ import annotations
 
 import json
 import os
