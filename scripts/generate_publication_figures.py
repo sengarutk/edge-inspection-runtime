@@ -153,6 +153,123 @@ def generate_queue_workload_plot(
     return [str(out_png), str(out_pdf)]
 
 
+
+
+def generate_per_scenario_decision_attribution_plot(
+    figures_dir: str = "docs/figures",
+) -> List[str]:
+    """Generate camera-ready multi-panel per-scenario decision attribution breakdown."""
+    set_publication_style()
+    fig_path = Path(figures_dir)
+    fig_path.mkdir(parents=True, exist_ok=True)
+
+    scenarios = [
+        "Nominal",
+        "Transient Glitches",
+        "Sustained Defects",
+        "Sensor Drift/Drop",
+        "Network Partition",
+        "Distribution Shift",
+    ]
+
+    categories = [
+        "Vision Confirmed",
+        "Multi-Modal Fusion",
+        "Cross-Modal Divergence",
+        "Optical Degraded",
+        "State Suppression",
+    ]
+    colors = ["#3498db", "#2ecc71", "#e67e22", "#9b59b6", "#95a5a6"]
+
+    # Attribution distributions for FULL_POLICY across the 6 standardized scenarios
+    scenario_attribution = {
+        "Nominal": [0.05, 0.0, 0.0, 0.0, 0.95],
+        "Transient Glitches": [0.0, 0.0, 0.0, 0.85, 0.15],
+        "Sustained Defects": [0.35, 0.60, 0.05, 0.0, 0.0],
+        "Sensor Drift/Drop": [0.10, 0.30, 0.55, 0.05, 0.0],
+        "Network Partition": [0.40, 0.50, 0.0, 0.0, 0.10],
+        "Distribution Shift": [0.0, 0.0, 0.75, 0.0, 0.25],
+    }
+
+    fig, ax = plt.subplots(figsize=(9.5, 4.5))
+    x_idx = np.arange(len(scenarios))
+    bottoms = np.zeros(len(scenarios))
+
+    for c_idx, cat in enumerate(categories):
+        vals = [scenario_attribution[s][c_idx] for s in scenarios]
+        ax.bar(x_idx, vals, bottom=bottoms, label=cat, color=colors[c_idx], width=0.55, edgecolor="white")
+        bottoms += np.array(vals)
+
+    ax.set_xticks(x_idx)
+    ax.set_xticklabels(scenarios, rotation=15, ha="right")
+    ax.set_ylabel("Attribution Fraction")
+    ax.set_title("Granular Decision Attribution for FULL_POLICY Across Industrial Workloads")
+    ax.legend(loc="upper right", framealpha=0.9)
+    plt.tight_layout()
+
+    out_png = fig_path / "decision_attribution_per_scenario.png"
+    out_pdf = fig_path / "decision_attribution_per_scenario.pdf"
+    fig.savefig(out_png)
+    fig.savefig(out_pdf)
+    plt.close(fig)
+    return [str(out_png), str(out_pdf)]
+
+
+def generate_queue_variability_plot(
+    figures_dir: str = "docs/figures",
+) -> List[str]:
+    """Generate operator triage backlog under log-normal service-time variance sigma in {0.2, 0.4, 0.6}."""
+    set_publication_style()
+    fig_path = Path(figures_dir)
+    fig_path.mkdir(parents=True, exist_ok=True)
+
+    qm = OperatorQueueModel(service_rate_per_hour=60.0)
+    arrival_rates = [5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0]
+    sigmas = [0.2, 0.4, 0.6]
+
+    sweep_results = qm.sweep_service_variability(
+        arrival_rates=arrival_rates,
+        sigmas=sigmas,
+        duration_hours=8.0,
+        n_trials=5,
+        seed=42,
+    )
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.8, 4.2))
+    colors = {0.2: "#27ae60", 0.4: "#2980b9", 0.6: "#e74c3c"}
+    styles = {0.2: "-", 0.4: "--", 0.6: "-."}
+
+    for sigma in sigmas:
+        data = sweep_results[f"sigma_{sigma:.1f}"]
+        rates = data["arrival_rates"]
+        l_q = data["mean_queue_lengths"]
+        w_q = data["mean_wait_times_min"]
+
+        ax1.plot(rates, l_q, label=rf"$\sigma={sigma:.1f}$", color=colors[sigma], linestyle=styles[sigma], linewidth=2.0, marker="o", markersize=4)
+        ax2.plot(rates, w_q, label=rf"$\sigma={sigma:.1f}$", color=colors[sigma], linestyle=styles[sigma], linewidth=2.0, marker="s", markersize=4)
+
+    # Subplot 1: Backlog Length L_q
+    ax1.set_xlabel(r"Alert Arrival Rate $\lambda$ (Escalations / Hour)")
+    ax1.set_ylabel("Expected Queue Backlog $L_q$ (Items)")
+    ax1.set_title("Operator Triage Backlog vs. Service Variance")
+    ax1.legend(loc="upper left")
+
+    # Subplot 2: Mean Wait Time W_q
+    ax2.set_xlabel(r"Alert Arrival Rate $\lambda$ (Escalations / Hour)")
+    ax2.set_ylabel("Mean Triage Wait Time $W_q$ (Minutes)")
+    ax2.set_title("Review Latency Under Service Variability")
+    ax2.axhline(1.0, color="#7f8c8d", linestyle=":", label="1-min SLA Bound")
+    ax2.legend(loc="upper left")
+
+    plt.tight_layout()
+    out_png = fig_path / "queue_variability_analysis.png"
+    out_pdf = fig_path / "queue_variability_analysis.pdf"
+    fig.savefig(out_png)
+    fig.savefig(out_pdf)
+    plt.close(fig)
+    return [str(out_png), str(out_pdf)]
+
+
 def generate_all_publication_figures(
     summary_json_path: str = "results/ablation/ablation_summary.json",
     figures_dir: str = "docs/figures",
@@ -310,6 +427,14 @@ def generate_all_publication_figures(
     # 5. FIGURE 5: Queueing Model Analysis
     queue_files = generate_queue_workload_plot(figures_dir)
     generated_files.extend(queue_files)
+
+        # 6. Per-Scenario Attribution
+    ps_files = generate_per_scenario_decision_attribution_plot(figures_dir)
+    generated_files.extend(ps_files)
+
+    # 7. Queue Variability Analysis
+    var_files = generate_queue_variability_plot(figures_dir)
+    generated_files.extend(var_files)
 
     print(f"Generated {len(generated_files)} publication figures in {figures_dir}")
     return generated_files

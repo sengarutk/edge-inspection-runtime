@@ -1,0 +1,64 @@
+{
+  "nasa_ims_bearing": {
+    "description": "NASA IMS Bearing Run-to-Failure Accelerometer Trace (Inner Race Fault)",
+    "defect_start_step": 420,
+    "total_steps": 600,
+    "results": {
+      "BASELINE": {
+        "policy_mode": "BASELINE",
+        "total_steps": 600,
+        "false_alarms_count": 24,
+        "false_alarms_per_hour": 6171.43,
+        "true_positive_rate": 0.75,
+        "detection_delay_frames": 18,
+        "detection_delay_seconds": 0.6,
+        "queue_utilization": 0.9833,
+        "mean_queue_length": 58.017,
+        "mean_wait_time_minutes": 59.0
+      },
+      "FULL_POLICY": {
+        "policy_mode": "FULL_POLICY",
+        "total_steps": 600,
+        "false_alarms_count": 148,
+        "false_alarms_per_hour": 38057.14,
+        "true_positive_rate": 1.0,
+        "detection_delay_frames": 0,
+        "detection_delay_seconds": 0.0,
+        "queue_utilization": 0.9833,
+        "mean_queue_length": 58.017,
+        "mean_wait_time_minutes": 59.0
+      }
+    }
+  },
+  "nasa_cmapss_turbofan": {
+    "description": "NASA C-MAPSS Turbofan High-Pressure Compressor Run-to-Failure Trace",
+    "defect_start_step": 390,
+    "total_steps": 600,
+    "results": {
+      "BASELINE": {
+        "policy_mode": "BASELINE",
+        "total_steps": 600,
+        "false_alarms_count": 21,
+        "false_alarms_per_hour": 5815.38,
+        "true_positive_rate": 0.7476,
+        "detection_delay_frames": 32,
+        "detection_delay_seconds": 1.067,
+        "queue_utilization": 0.9833,
+        "mean_queue_length": 58.017,
+        "mean_wait_time_minutes": 59.0
+      },
+      "FULL_POLICY": {
+        "policy_mode": "FULL_POLICY",
+        "total_steps": 600,
+        "false_alarms_count": 146,
+        "false_alarms_per_hour": 40430.77,
+        "true_positive_rate": 1.0,
+        "detection_delay_frames": 0,
+        "detection_delay_seconds": 0.0,
+        "queue_utilization": 0.9833,
+        "mean_queue_length": 58.017,
+        "mean_wait_time_minutes": 59.0
+      }
+    }
+  }
+}

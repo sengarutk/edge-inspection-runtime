@@ -76,3 +76,25 @@ def test_variable_service_monte_carlo() -> None:
     assert sim["mean_wait_minutes"] >= 0.0
     assert sim["p95_wait_minutes"] >= sim["mean_wait_minutes"]
     assert sim["max_queue_length"] >= sim["mean_queue_length"]
+
+
+def test_sweep_service_variability() -> None:
+    """Verify service variability sweep across sigmas."""
+    qm = OperatorQueueModel(service_rate_per_hour=60.0)
+    rates = [10.0, 20.0, 30.0]
+    sigmas = [0.2, 0.4, 0.6]
+
+    res = qm.sweep_service_variability(
+        arrival_rates=rates,
+        sigmas=sigmas,
+        duration_hours=2.0,
+        n_trials=2,
+        seed=2026,
+    )
+
+    for sigma in sigmas:
+        key = f"sigma_{sigma:.1f}"
+        assert key in res
+        assert len(res[key]["mean_queue_lengths"]) == len(rates)
+        assert len(res[key]["mean_wait_times_min"]) == len(rates)
+        assert all(w >= 0.0 for w in res[key]["mean_wait_times_min"])

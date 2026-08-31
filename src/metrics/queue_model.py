@@ -96,3 +96,48 @@ class OperatorQueueModel:
             "mean_wait_minutes": round(float(np.mean(wait_times_min)), 2),
             "p95_wait_minutes": round(float(np.percentile(wait_times_min, 95)), 2),
         }
+
+    def sweep_service_variability(
+        self,
+        arrival_rates: List[float],
+        sigmas: List[float] = [0.2, 0.4, 0.6],
+        duration_hours: float = 8.0,
+        n_trials: int = 5,
+        seed: int = 42,
+    ) -> Dict[str, Any]:
+        """Sweep arrival rates lambda across multiple log-normal service-time variance levels sigma.
+
+        Returns a dictionary mapping sigma to arrays of L_q, W_q, and p95 wait times.
+        """
+        results: Dict[str, Any] = {}
+
+        for sigma in sigmas:
+            sigma_key = f"sigma_{sigma:.1f}"
+            results[sigma_key] = {
+                "arrival_rates": arrival_rates,
+                "mean_queue_lengths": [],
+                "mean_wait_times_min": [],
+                "p95_wait_times_min": [],
+            }
+
+            for lam in arrival_rates:
+                trial_lq: List[float] = []
+                trial_wq: List[float] = []
+                trial_p95: List[float] = []
+
+                for trial_idx in range(n_trials):
+                    sim = self.simulate_variable_service(
+                        arrival_rate_per_hour=lam,
+                        duration_hours=duration_hours,
+                        service_sigma=sigma,
+                        seed=seed + trial_idx * 100,
+                    )
+                    trial_lq.append(sim["mean_queue_length"])
+                    trial_wq.append(sim["mean_wait_minutes"])
+                    trial_p95.append(sim["p95_wait_minutes"])
+
+                results[sigma_key]["mean_queue_lengths"].append(round(float(np.mean(trial_lq)), 3))
+                results[sigma_key]["mean_wait_times_min"].append(round(float(np.mean(trial_wq)), 3))
+                results[sigma_key]["p95_wait_times_min"].append(round(float(np.mean(trial_p95)), 3))
+
+        return results
