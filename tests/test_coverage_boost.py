@@ -172,3 +172,30 @@ def test_metrics_rolling_windows_and_defect_steps(tmp_path: Path) -> None:
     assert 0.0 <= metrics["operator_overload_fraction"] <= 1.0
     assert metrics["true_positive_rate"] > 0.0
     assert 0.0 <= metrics["false_positive_rate"] <= 1.0
+
+
+def test_dashboard_seed_and_chaos_boost(tmp_path: Path) -> None:
+    """Test dashboard live seeder and chaos fault injection."""
+    from src.dashboard.app import seed_demo_simulation, inject_chaos_fault_event, compute_dynamic_fmea
+    db_file = tmp_path / "boost_audit.db"
+    ev_dir = tmp_path / "boost_ev"
+    db = AuditLogDB(db_path=str(db_file))
+    ev_mgr = EvidenceManager(storage_dir=str(ev_dir))
+
+    # Seed 20 steps
+    count = seed_demo_simulation(20, db=db, evidence_mgr=ev_mgr)
+    assert count == 20
+
+    # Inject all 4 faults
+    inject_chaos_fault_event("OPTICAL_BLUR", db, ev_mgr)
+    inject_chaos_fault_event("NETWORK_PARTITION", db, ev_mgr)
+    inject_chaos_fault_event("SENSOR_DRIFT", db, ev_mgr)
+    inject_chaos_fault_event("SENSOR_DROPOUT", db, ev_mgr)
+
+    # Check FMEA dynamic calculation
+    events = db.query_recent_events(limit=50)
+    telem = db.query_recent_telemetry(limit=50)
+    fmea = compute_dynamic_fmea(db, events, telem)
+    assert len(fmea) == 5
+
+    db.close()
