@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10800000.svg)](https://doi.org/10.5281/zenodo.10800000)
 [![Tests: Passing](https://img.shields.io/badge/Tests-121%2F121%20Passing-brightgreen.svg)](https://github.com/sengar/edge-inspection-runtime)
-[![Coverage: 93%+](https://img.shields.io/badge/Coverage-93%25-success.svg)](https://github.com/sengar/edge-inspection-runtime)
+[![Coverage: 93%+](https://img.shields.io/badge/Coverage-94%25-success.svg)](https://github.com/sengar/edge-inspection-runtime)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![Zero Data Loss: Verified](https://img.shields.io/badge/Zero--Data--Loss-Verified-orange.svg)](docs/architecture.md)
