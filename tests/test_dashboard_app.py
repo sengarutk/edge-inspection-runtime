@@ -11,10 +11,13 @@ from src.audit_log import AuditLogDB
 from src.config import AuditConfig, load_mqtt_config
 from src.dashboard.app import (
     compute_dynamic_fmea,
+    generate_defect_heatmap,
+    generate_synthetic_industrial_frame,
     get_database,
     get_evidence_mgr,
     get_system_status,
     inject_chaos_fault_event,
+    restore_system_nominal,
     seed_demo_simulation,
 )
 from src.evidence_manager import EvidenceManager
@@ -57,6 +60,19 @@ def test_factories_initialization(tmp_path: Path) -> None:
     assert ev_mgr is not None
 
 
+def test_synthetic_generation_helpers() -> None:
+    """Test industrial frame and defect heatmap generators."""
+    frame = generate_synthetic_industrial_frame(width=224, height=224, seed=42)
+    assert frame.shape == (224, 224, 3)
+    assert frame.dtype == np.uint8
+
+    heatmap = generate_defect_heatmap(width=224, height=224, center=(112, 112), radius=35)
+    assert heatmap.shape == (224, 224)
+    assert heatmap.dtype == np.float32
+    assert 0.99 <= float(heatmap.max()) <= 1.01
+    assert 0.0 <= float(heatmap.min()) <= 0.05
+
+
 def test_seed_demo_simulation(tmp_path: Path) -> None:
     """Test seed_demo_simulation helper populating database and evidence."""
     db_file = tmp_path / "seed_audit.db"
@@ -75,8 +91,8 @@ def test_seed_demo_simulation(tmp_path: Path) -> None:
     db.close()
 
 
-def test_inject_chaos_fault_event(tmp_path: Path) -> None:
-    """Test all chaos injection fault triggers in dashboard."""
+def test_inject_chaos_and_restore(tmp_path: Path) -> None:
+    """Test all chaos injection fault triggers and nominal restore in dashboard."""
     db_file = tmp_path / "chaos_audit.db"
     ev_dir = tmp_path / "chaos_ev"
     db = AuditLogDB(db_path=str(db_file))
@@ -91,6 +107,11 @@ def test_inject_chaos_fault_event(tmp_path: Path) -> None:
     assert len(events) >= 3
     health_rows = db.query_recent_health(limit=50)
     assert len(health_rows) >= 4
+
+    # Test Restore to Nominal
+    restore_system_nominal(db)
+    health_restored = db.query_recent_health(limit=50)
+    assert len(health_restored) >= 9
 
     db.close()
 
@@ -120,15 +141,6 @@ def test_compute_dynamic_fmea(tmp_path: Path) -> None:
     assert "DISCONNECTED" in rows_degraded[3]["Health Status"]
 
     db.close()
-
-
-def test_streamlit_app_rendering(tmp_path: Path) -> None:
-    """Test Streamlit app rendering using AppTest with sufficient timeout."""
-    app_file = Path(__file__).parent.parent / "src" / "dashboard" / "app.py"
-
-    at = AppTest.from_file(str(app_file), default_timeout=15)
-    at.run(timeout=15)
-    assert not at.exception
 
 
 def test_triage_actions_and_empty_state(tmp_path: Path) -> None:
@@ -165,3 +177,12 @@ def test_triage_actions_and_empty_state(tmp_path: Path) -> None:
     assert ev_rejected["review_status"] == "REJECTED"
 
     db.close()
+
+
+def test_streamlit_app_rendering(tmp_path: Path) -> None:
+    """Test Streamlit app rendering using AppTest with sufficient timeout."""
+    app_file = Path(__file__).parent.parent / "src" / "dashboard" / "app.py"
+
+    at = AppTest.from_file(str(app_file), default_timeout=15)
+    at.run(timeout=15)
+    assert not at.exception

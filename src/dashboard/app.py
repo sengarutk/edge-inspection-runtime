@@ -8,18 +8,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-"""Industrial Edge Inspection Runtime - Operator Reliability & Triage Console.
-
-Production-grade Streamlit application providing real-time telemetry streaming,
-human-in-the-loop triage queue, active chaos engineering, and dynamic FMEA diagnostics.
-"""
+__doc__ = """Industrial Edge Inspection Runtime - Operator Reliability & Triage Console."""
 
 import json
 import os
 import random
 import time
-from datetime import datetime, timezone
-from pathlib import Path
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 import cv2
@@ -127,6 +122,41 @@ def get_system_status(recent_events: List[Dict[str, Any]]) -> Tuple[str, str]:
 
 
 # =============================================================================
+# Realistic Industrial Texture & Heatmap Generation
+# =============================================================================
+def generate_synthetic_industrial_frame(
+    width: int = 224, height: int = 224, seed: Optional[int] = None
+) -> np.ndarray:
+    """Generate a realistic brushed-steel texture with subtle weld lines."""
+    rng = np.random.RandomState(seed or 42)
+    # Base metallic luminance gradient
+    x = np.linspace(110, 140, width)
+    base = np.tile(x, (height, 1)).astype(np.float32)
+    # Directional brushed streaks
+    streaks = rng.normal(0, 8, (height, 1)).repeat(width, axis=1)
+    # Fine surface grain
+    grain = rng.normal(0, 4, (height, width))
+    img = np.clip(base + streaks + grain, 0, 255).astype(np.uint8)
+    img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    # Subtle longitudinal weld guide seam
+    cv2.line(img_bgr, (width // 2, 0), (width // 2, height), (95, 95, 105), 2)
+    return img_bgr
+
+
+def generate_defect_heatmap(
+    width: int = 224,
+    height: int = 224,
+    center: Tuple[int, int] = (112, 112),
+    radius: int = 35,
+) -> np.ndarray:
+    """Generate a 2D Gaussian activation hotspot simulating deep PatchCore patch anomalies."""
+    y, x = np.ogrid[:height, :width]
+    dist_sq = (x - center[0]) ** 2 + (y - center[1]) ** 2
+    heatmap = np.exp(-dist_sq / (2.0 * (radius**2))).astype(np.float32)
+    return heatmap
+
+
+# =============================================================================
 # Interactive Demo Seeder & Chaos Simulation Helpers
 # =============================================================================
 def seed_demo_simulation(
@@ -134,7 +164,7 @@ def seed_demo_simulation(
     db: Optional[AuditLogDB] = None,
     evidence_mgr: Optional[EvidenceManager] = None,
 ) -> int:
-    """Execute multi-step simulated edge inspection cycles to seed telemetry and risk events."""
+    """Execute multi-step simulated edge inspection cycles with realistic 30Hz progression."""
     audit_db = db or get_database()
     ev_mgr = evidence_mgr or get_evidence_mgr()
 
@@ -142,22 +172,25 @@ def seed_demo_simulation(
     inf_engine = InferenceEngine(seed=42)
     policy_engine = TemporalPolicyEngine()
 
-    rng = np.random.RandomState(42)
-    base_frame = rng.randint(90, 160, (224, 224, 3), dtype=np.uint8)
-
+    base_time = datetime.now(timezone.utc) - timedelta(seconds=n_steps * 0.03333)
     events_generated = 0
+
     for step in range(n_steps):
-        # Determine step conditions
+        step_time = base_time + timedelta(milliseconds=step * 33.333)
+        now_iso = step_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+        # Determine step anomaly schedule
         is_defect = (25 <= step <= 40) or (70 <= step <= 80)
         is_sensor_fault = (50 <= step <= 65)
         is_optical_fault = (step == 88)
 
-        # 1. Optical processing
-        frame = base_frame.copy()
+        # 1. Optical processing with industrial metallic texture
+        frame = generate_synthetic_industrial_frame(width=224, height=224, seed=42 + step)
         if is_optical_fault:
             frame = cv2.GaussianBlur(frame, (31, 31), 0)
 
         inf_result = inf_engine.run_inference(frame, inject_anomaly=is_defect)
+        inf_result.timestamp_utc = now_iso
 
         # 2. Physical sensor simulation
         dropouts = ["current_amps"] if (15 <= step <= 18) else []
@@ -166,19 +199,23 @@ def seed_demo_simulation(
             inject_fault=is_sensor_fault,
             simulate_dropout=dropouts,
         )
+        sensor_reading.timestamp_utc = now_iso
 
-        # 3. Evidence generation for significant anomalies
+        # 3. Evidence generation with 2D Gaussian heatmap overlay
         ev_uri = None
         if is_defect or is_optical_fault or is_sensor_fault:
-            heatmap = (
-                inf_result.heatmap
-                if inf_result.heatmap is not None
-                else np.zeros((224, 224), dtype=np.float32)
-            )
+            if is_defect:
+                # Place defect hotspot along weld seam
+                defect_center = (112 + int(np.sin(step) * 15), 60 + (step * 3) % 100)
+                heatmap = generate_defect_heatmap(center=defect_center, radius=28)
+            else:
+                heatmap = np.zeros((224, 224), dtype=np.float32)
+
             ev_uri = ev_mgr.save_evidence(frame, heatmap, f"sim_frame_{step:04d}")
 
         # 4. Temporal Policy Evaluation
         decision = policy_engine.evaluate(inf_result, sensor_reading, evidence_uri=ev_uri)
+        decision.timestamp_utc = now_iso
 
         # 5. Database commits
         audit_db.insert_telemetry(sensor_reading, inf_result)
@@ -198,17 +235,20 @@ def inject_chaos_fault_event(
     inf_engine = InferenceEngine()
     policy_engine = TemporalPolicyEngine()
 
-    rng = np.random.RandomState(int(time.time() * 1000) % 100000)
-    frame = rng.randint(90, 160, (224, 224, 3), dtype=np.uint8)
+    frame = generate_synthetic_industrial_frame(seed=int(time.time() * 1000) % 100000)
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
     if fault_type == "OPTICAL_BLUR":
         frame = cv2.GaussianBlur(frame, (45, 45), 0)
         inf_result = inf_engine.run_inference(frame, inject_anomaly=False)
+        inf_result.timestamp_utc = now_iso
         sensor_reading = sensor_sim.step(machine_state=MachineState.RUNNING)
+        sensor_reading.timestamp_utc = now_iso
         ev_uri = evidence_mgr.save_evidence(
             frame, np.zeros((224, 224), dtype=np.float32), f"chaos_blur_{int(time.time())}"
         )
         decision = policy_engine.evaluate(inf_result, sensor_reading, evidence_uri=ev_uri)
+        decision.timestamp_utc = now_iso
         db.insert_telemetry(sensor_reading, inf_result)
         db.insert_risk_event(decision)
         db.insert_system_health("camera_optics", "DEGRADED", "OPTICAL_BLUR_DETECTED: Laplacian Var < 100.0")
@@ -221,21 +261,36 @@ def inject_chaos_fault_event(
 
     elif fault_type == "SENSOR_DRIFT":
         inf_result = inf_engine.run_inference(frame, inject_anomaly=False)
+        inf_result.timestamp_utc = now_iso
         sensor_reading = sensor_sim.step(machine_state=MachineState.RUNNING, inject_fault=True)
+        sensor_reading.timestamp_utc = now_iso
         decision = policy_engine.evaluate(inf_result, sensor_reading)
+        decision.timestamp_utc = now_iso
         db.insert_telemetry(sensor_reading, inf_result)
         db.insert_risk_event(decision)
         db.insert_system_health("physical_sensors", "WARNING", "Thermal Drift Detected (+35C elevation)")
 
     elif fault_type == "SENSOR_DROPOUT":
         inf_result = inf_engine.run_inference(frame, inject_anomaly=False)
+        inf_result.timestamp_utc = now_iso
         sensor_reading = sensor_sim.step(
             machine_state=MachineState.RUNNING, simulate_dropout=["current_amps"]
         )
+        sensor_reading.timestamp_utc = now_iso
         decision = policy_engine.evaluate(inf_result, sensor_reading)
+        decision.timestamp_utc = now_iso
         db.insert_telemetry(sensor_reading, inf_result)
         db.insert_risk_event(decision)
         db.insert_system_health("current_sensor", "DEGRADED", "Channel Dropout: Imputed ZOH")
+
+
+def restore_system_nominal(db: AuditLogDB) -> None:
+    """Restore all hardware and network subsystem states to nominal operating conditions."""
+    db.insert_system_health("camera_optics", "HEALTHY", "Nominal 30 FPS / Laplacian Var >= 100.0")
+    db.insert_system_health("patchcore_model", "HEALTHY", "Inference Latency <= 10.0ms")
+    db.insert_system_health("physical_sensors", "HEALTHY", "All 3-Axis & Thermal Channels Active @ 30Hz")
+    db.insert_system_health("current_sensor", "HEALTHY", "Current Sensor Nominal")
+    db.insert_system_health("mqtt_broker", "CONNECTED", "Broker Connection Established (localhost:1883)")
 
 
 def compute_dynamic_fmea(
@@ -418,33 +473,44 @@ def main() -> None:
 
         # Time Series Charts & Empty State Handling
         if recent_telemetry:
-            df_telem = pd.DataFrame(recent_telemetry).iloc[::-1]
-            df_telem["timestamp"] = pd.to_datetime(df_telem["timestamp_utc"])
+            df_telem = pd.DataFrame(recent_telemetry).iloc[::-1].copy()
+            # Clean formatted timestamp string HH:MM:SS for sharp X-axis labels
+            df_telem["time_label"] = pd.to_datetime(df_telem["timestamp_utc"]).dt.strftime("%H:%M:%S")
 
-            st.subheader("Inspection Risk Trajectory & Anomaly Scores")
-            chart_data = df_telem.set_index("timestamp")[["vision_score", "sensor_score"]]
-            st.line_chart(chart_data)
+            # Strip 1: Inspection Risk Trajectory & Anomaly Scores
+            st.subheader("1. Inspection Risk Trajectory & Anomaly Scores")
+            risk_strip = df_telem.set_index("time_label")[["vision_score", "sensor_score"]]
+            st.line_chart(risk_strip)
 
-            st.subheader("Physical Telemetry Multi-Sensor Strip")
-            sensor_data = df_telem.set_index("timestamp")[
-                ["vibration_rms", "temperature_c", "current_amps"]
-            ]
-            st.line_chart(sensor_data)
+            # Strip 2: Thermal Dynamics Strip
+            st.subheader("2. Thermal Dynamics Strip (°C)")
+            thermal_strip = df_telem.set_index("time_label")[["temperature_c"]]
+            st.line_chart(thermal_strip)
 
-            st.subheader("Recent Inspection Telemetry (Last 15 Cycles)")
-            st.dataframe(
-                df_telem.tail(15)[
-                    [
-                        "timestamp_utc",
-                        "vision_score",
-                        "sensor_score",
-                        "vibration_rms",
-                        "temperature_c",
-                        "current_amps",
-                    ]
-                ],
-                use_container_width=True,
-            )
+            # Strip 3: Electro-Mechanical Dynamics Strip
+            st.subheader("3. Electro-Mechanical Dynamics (Current & Vibration)")
+            mech_strip = df_telem.set_index("time_label")[["current_amps", "vibration_rms"]]
+            st.line_chart(mech_strip)
+
+            st.markdown("---")
+            st.subheader("Recent Ingestion Stream (Last 15 Cycles)")
+
+            display_df = df_telem.tail(15)[
+                [
+                    "timestamp_utc",
+                    "vision_score",
+                    "sensor_score",
+                    "vibration_rms",
+                    "temperature_c",
+                    "current_amps",
+                ]
+            ].copy()
+
+            # Format float numbers cleanly
+            for col in ["vision_score", "sensor_score", "vibration_rms", "temperature_c", "current_amps"]:
+                display_df[col] = display_df[col].map(lambda x: f"{x:.3f}" if pd.notnull(x) else "0.000")
+
+            st.dataframe(display_df, use_container_width=True, hide_index=True)
         else:
             st.info("No continuous telemetry records ingested yet.")
             st.markdown(
@@ -586,11 +652,17 @@ def main() -> None:
                 st.toast("Injected SENSOR_DROPOUT on current channel!", icon="⚡")
                 st.rerun()
 
+        st.markdown("")
+        if st.button("🔄 Restore System to Nominal State", use_container_width=True):
+            restore_system_nominal(audit_db)
+            st.toast("All subsystems restored to HEALTHY nominal state!", icon="🔄")
+            st.rerun()
+
         st.markdown("---")
         st.subheader("Dynamic Subsystem FMEA Diagnostic Health Matrix")
 
         fmea_rows = compute_dynamic_fmea(audit_db, recent_events, recent_telemetry)
-        st.dataframe(pd.DataFrame(fmea_rows), use_container_width=True)
+        st.dataframe(pd.DataFrame(fmea_rows), use_container_width=True, hide_index=True)
 
 
 if __name__ == "__main__":
