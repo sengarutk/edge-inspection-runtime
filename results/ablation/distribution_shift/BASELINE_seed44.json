@@ -1,0 +1,31 @@
+{
+  "scenario": "distribution_shift",
+  "policy_mode": "BASELINE",
+  "seed": 44,
+  "total_steps": 300,
+  "metrics": {
+    "total_steps": 300,
+    "raw_threshold_crossings": 80,
+    "policy_escalations": 80,
+    "review_events": 20,
+    "actionable_events": 100,
+    "alert_suppression_factor": 0.0,
+    "mean_detection_latency_frames": 0.0,
+    "mean_detection_latency_ms": 0.0,
+    "review_load_per_hour": 36003.600360036005,
+    "operator_overload_fraction": 1.0,
+    "fatigue_delay_tradeoff_index": 0.0,
+    "true_positive_rate": 1.0,
+    "false_positive_rate": 0.3333333333333333,
+    "cross_modal_discrepancy_rate": 0.0,
+    "total_actionable_events": 100,
+    "confirmed_defects": 0,
+    "rejected_false_positives": 100,
+    "pending_reviews": 0,
+    "operator_confirmation_precision": 0.0,
+    "optical_degradations_handled": 0,
+    "hardware_degraded_rate": 0.0,
+    "spool_depth_final": 300,
+    "event_loss_rate": 0.0
+  }
+}

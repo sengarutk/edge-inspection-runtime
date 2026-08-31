@@ -208,7 +208,7 @@ class AuditLogDB:
             )
             return cursor.lastrowid or 0
 
-    def record_operator_review(self, event_id: str, action: str, notes: Optional[str] = None) -> bool:
+    def record_operator_review(self, event_id: str, action: Optional[str] = None, notes: Optional[str] = None, review_status: Optional[str] = None) -> bool:
         """Record human operator audit review (CONFIRMED or REJECTED).
 
         Args:
@@ -371,6 +371,14 @@ class AuditLogDB:
                 "confirmation_rate": confirm_rate,
                 "reviewed_total": reviewed_total,
             }
+
+    def query_events(self, limit: int = 50, risk_filter: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Alias for query_recent_events."""
+        return self.query_recent_events(limit=limit, risk_filter=risk_filter)
+
+    def record_decision(self, decision: Union[PolicyDecision, Dict[str, Any]]) -> str:
+        """Alias for insert_risk_event."""
+        return self.insert_risk_event(decision)
 
     def close(self) -> None:
         """Close database connection."""

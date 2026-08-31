@@ -3,12 +3,23 @@
 Provides strict Pydantic V2 models and cached configuration loaders.
 """
 
+from enum import Enum
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type, TypeVar
 import yaml
 from loguru import logger
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
+
+
+class PolicyMode(str, Enum):
+    """Configurable decision policy variants for experimental ablation analysis."""
+    BASELINE = "BASELINE"
+    EMA_ONLY = "EMA_ONLY"
+    EMA_KOFN = "EMA_KOFN"
+    NO_COOLDOWN = "NO_COOLDOWN"
+    NO_FUSION = "NO_FUSION"
+    FULL_POLICY = "FULL_POLICY"
 
 
 class SimulationConfig(BaseModel):
@@ -180,6 +191,9 @@ class PolicyConfig(BaseModel):
     """Top-level policy configuration schema."""
     model_config = ConfigDict(extra="forbid")
 
+    policy_mode: PolicyMode = Field(
+        default=PolicyMode.FULL_POLICY, description="Active decision policy variant."
+    )
     temporal_smoothing: TemporalSmoothingConfig = Field(default_factory=TemporalSmoothingConfig)
     confirmation_window: ConfirmationWindowConfig = Field(default_factory=ConfirmationWindowConfig)
     cooldown: CooldownConfig = Field(default_factory=CooldownConfig)
@@ -243,6 +257,46 @@ class MQTTConfig(BaseModel):
     qos: MQTTQoSConfig = Field(default_factory=MQTTQoSConfig)
     spooler: SpoolerConfig = Field(default_factory=SpoolerConfig)
     audit: AuditConfig = Field(default_factory=AuditConfig)
+
+
+class MachineStateScheduleItem(BaseModel):
+    """Time window during which a specific machine state applies."""
+    model_config = ConfigDict(extra="forbid")
+
+    start: int = Field(..., ge=0, description="Start step index (inclusive).")
+    end: int = Field(..., ge=0, description="End step index (exclusive).")
+    state: str = Field(..., description="Machine state string (e.g. RUNNING, IDLE, MAINTENANCE, FAULT).")
+
+
+class InjectedFaultItem(BaseModel):
+    """Planned fault injection specification in a scenario."""
+    model_config = ConfigDict(extra="forbid")
+
+    fault_type: str = Field(..., description="Fault type identifier.")
+    start_step: int = Field(..., ge=0, description="Start step index.")
+    duration_steps: int = Field(..., gt=0, description="Duration in steps.")
+    intensity: float = Field(default=1.0, gt=0.0, description="Fault intensity multiplier.")
+    target_channels: List[str] = Field(default_factory=list, description="Specific target sensor channels.")
+
+
+class VisionDefectScheduleItem(BaseModel):
+    """Time window during which a visual defect is present."""
+    model_config = ConfigDict(extra="forbid")
+
+    start: int = Field(..., ge=0, description="Start step index (inclusive).")
+    end: int = Field(..., ge=0, description="End step index (exclusive).")
+
+
+class ScenarioConfig(BaseModel):
+    """Standardized scenario workload configuration schema."""
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(..., description="Unique scenario identifier.")
+    description: str = Field(..., description="Detailed scenario description.")
+    total_steps: int = Field(default=300, gt=0, description="Total simulation steps in scenario.")
+    machine_state_schedule: List[MachineStateScheduleItem] = Field(default_factory=list)
+    injected_faults: List[InjectedFaultItem] = Field(default_factory=list)
+    vision_defect_schedule: List[VisionDefectScheduleItem] = Field(default_factory=list)
 
 
 T = TypeVar("T", bound=BaseModel)
@@ -318,3 +372,7 @@ def load_policy_config(path: str | Path = "configs/policy_config.yaml") -> Polic
 def load_mqtt_config(path: str | Path = "configs/mqtt_config.yaml") -> MQTTConfig:
     """Cached loader for MQTT messaging, spooling, and audit configuration."""
     return load_config(path, MQTTConfig)
+
+def load_scenario_config(path: str | Path) -> ScenarioConfig:
+    """Loader for standardized scenario workload configuration."""
+    return load_config(path, ScenarioConfig)

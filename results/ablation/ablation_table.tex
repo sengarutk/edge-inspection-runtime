@@ -1,0 +1,65 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Comprehensive Ablation Benchmark: Policy Modes vs. Standardized Industrial Workloads (Mean $\pm$ Std across 3 Seeds)}
+\label{tab:comprehensive_ablation_results}
+\begin{tabular}{llcccccc}
+\hline
+\textbf{Workload Scenario} & \textbf{Policy Mode} & \textbf{Suppression ($\rho_{\text{supp}}$)} & \textbf{Latency ($\Delta t$ frames)} & \textbf{Review Load (/hr)} & \textbf{Overload Frac} & \textbf{TPR} & \textbf{FPR} \\
+\hline
+\multicolumn{8}{l}{\textbf{Scenario: Distribution Shift}} \\
+\hline
+ & BASELINE & 0.0% $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 36003.6 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{33.3%} $\pm$ 0.0% \\
+ & EMA_ONLY & 0.0% $\pm$ 0.0% & 0.1 $\pm$ 0.0 & 36003.6 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{33.3%} $\pm$ 0.0% \\
+ & EMA_KOFN & 0.0% $\pm$ 0.0% & 0.1 $\pm$ 0.0 & 37803.8 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & 35.0% $\pm$ 0.0% \\
+ & NO_COOLDOWN & 0.0% $\pm$ 0.0% & 0.1 $\pm$ 0.0 & 37803.8 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & 35.0% $\pm$ 0.0% \\
+ & NO_FUSION & \textbf{91.6%} $\pm$ 0.3% & 0.1 $\pm$ 0.0 & 37803.8 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & 35.0% $\pm$ 0.0% \\
+ & FULL_POLICY & \textbf{91.6%} $\pm$ 0.3% & 0.1 $\pm$ 0.0 & 37803.8 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & 35.0% $\pm$ 0.0% \\
+\hline
+\multicolumn{8}{l}{\textbf{Scenario: Network Partitions}} \\
+\hline
+ & BASELINE & 0.0% $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 10801.1 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_ONLY & 3.9% $\pm$ 3.8% & 0.2 $\pm$ 0.0 & 10801.1 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & 96.7% $\pm$ 0.0% & 0.4% $\pm$ 0.0% \\
+ & EMA_KOFN & 0.0% $\pm$ 0.0% & 0.2 $\pm$ 0.0 & 12601.3 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & 96.7% $\pm$ 0.0% & 2.2% $\pm$ 0.0% \\
+ & NO_COOLDOWN & 0.0% $\pm$ 0.0% & 0.2 $\pm$ 0.0 & 12601.3 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & 96.7% $\pm$ 0.0% & 2.2% $\pm$ 0.0% \\
+ & NO_FUSION & \textbf{91.9%} $\pm$ 0.5% & 0.2 $\pm$ 0.0 & 12601.3 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & 96.7% $\pm$ 0.0% & 2.2% $\pm$ 0.0% \\
+ & FULL_POLICY & \textbf{91.9%} $\pm$ 0.5% & 0.2 $\pm$ 0.0 & 12601.3 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & 96.7% $\pm$ 0.0% & 2.2% $\pm$ 0.0% \\
+\hline
+\multicolumn{8}{l}{\textbf{Scenario: Nominal}} \\
+\hline
+ & BASELINE & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_ONLY & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_KOFN & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & NO_COOLDOWN & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & NO_FUSION & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & FULL_POLICY & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+\hline
+\multicolumn{8}{l}{\textbf{Scenario: Sensor Drift Dropout}} \\
+\hline
+ & BASELINE & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_ONLY & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_KOFN & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & NO_COOLDOWN & \textbf{100.0%} $\pm$ 0.0% & 4.0 $\pm$ 0.0 & 50885.1 $\pm$ 207.9 & 100.0% $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & 47.1% $\pm$ 0.2% \\
+ & NO_FUSION & \textbf{100.0%} $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & \textbf{0.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & FULL_POLICY & \textbf{100.0%} $\pm$ 0.0% & 4.0 $\pm$ 0.0 & 50885.1 $\pm$ 207.9 & 100.0% $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & 47.1% $\pm$ 0.2% \\
+\hline
+\multicolumn{8}{l}{\textbf{Scenario: Sustained Defects}} \\
+\hline
+ & BASELINE & 0.0% $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 43204.3 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_ONLY & 0.3% $\pm$ 0.5% & 0.1 $\pm$ 0.0 & 42964.3 $\pm$ 207.9 & \textbf{100.0%} $\pm$ 0.0% & 97.8% $\pm$ 0.5% & 1.1% $\pm$ 0.0% \\
+ & EMA_KOFN & 0.0% $\pm$ 0.0% & 0.1 $\pm$ 0.0 & 46564.7 $\pm$ 207.9 & \textbf{100.0%} $\pm$ 0.0% & 97.8% $\pm$ 0.5% & 6.7% $\pm$ 0.0% \\
+ & NO_COOLDOWN & 0.0% $\pm$ 0.0% & 0.1 $\pm$ 0.0 & 46804.7 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & 98.3% $\pm$ 0.0% & 6.7% $\pm$ 0.0% \\
+ & NO_FUSION & \textbf{92.1%} $\pm$ 0.4% & 0.1 $\pm$ 0.0 & 46564.7 $\pm$ 207.9 & \textbf{100.0%} $\pm$ 0.0% & 97.8% $\pm$ 0.5% & 6.7% $\pm$ 0.0% \\
+ & FULL_POLICY & \textbf{92.1%} $\pm$ 0.4% & 0.1 $\pm$ 0.0 & 46804.7 $\pm$ 0.0 & \textbf{100.0%} $\pm$ 0.0% & 98.3% $\pm$ 0.0% & 6.7% $\pm$ 0.0% \\
+\hline
+\multicolumn{8}{l}{\textbf{Scenario: Transient Glitches}} \\
+\hline
+ & BASELINE & 0.0% $\pm$ 0.0% & 0.0 $\pm$ 0.0 & 1800.2 $\pm$ 0.0 & 100.0% $\pm$ 0.0% & \textbf{100.0%} $\pm$ 0.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_ONLY & \textbf{100.0%} $\pm$ 0.0% & 0.3 $\pm$ 0.6 & 360.0 $\pm$ 360.0 & \textbf{66.7%} $\pm$ 57.7% & 20.0% $\pm$ 20.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & EMA_KOFN & \textbf{100.0%} $\pm$ 0.0% & 0.3 $\pm$ 0.6 & 360.0 $\pm$ 360.0 & \textbf{66.7%} $\pm$ 57.7% & 20.0% $\pm$ 20.0% & \textbf{0.0%} $\pm$ 0.0% \\
+ & NO_COOLDOWN & \textbf{100.0%} $\pm$ 0.0% & 0.3 $\pm$ 0.6 & 2520.3 $\pm$ 0.0 & 100.0% $\pm$ 0.0% & 40.0% $\pm$ 0.0% & 1.7% $\pm$ 0.0% \\
+ & NO_FUSION & \textbf{100.0%} $\pm$ 0.0% & 0.3 $\pm$ 0.6 & 2160.2 $\pm$ 360.0 & 100.0% $\pm$ 0.0% & 20.0% $\pm$ 20.0% & 1.7% $\pm$ 0.0% \\
+ & FULL_POLICY & \textbf{100.0%} $\pm$ 0.0% & 0.3 $\pm$ 0.6 & 2520.3 $\pm$ 0.0 & 100.0% $\pm$ 0.0% & 40.0% $\pm$ 0.0% & 1.7% $\pm$ 0.0% \\
+\hline
+\end{tabular}
+\end{table*}

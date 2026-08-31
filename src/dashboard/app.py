@@ -216,7 +216,7 @@ def main() -> None:
                     img = evidence_mgr.load_evidence(evidence_uri)
                     if img is not None:
                         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                        st.image(img_rgb, caption=f"Evidence: {Path(evidence_uri).name}", use_column_width=True)
+                        st.image(img_rgb, caption=f"Evidence: {Path(evidence_uri).name}", use_container_width=True)
                     else:
                         st.warning(f"Evidence file not found on disk at: {evidence_uri}")
                 else:

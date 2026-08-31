@@ -1,0 +1,31 @@
+{
+  "scenario": "sensor_drift_dropout",
+  "policy_mode": "NO_COOLDOWN",
+  "seed": 42,
+  "total_steps": 300,
+  "metrics": {
+    "total_steps": 300,
+    "raw_threshold_crossings": 137,
+    "policy_escalations": 0,
+    "review_events": 141,
+    "actionable_events": 141,
+    "alert_suppression_factor": 1.0,
+    "mean_detection_latency_frames": 4.0,
+    "mean_detection_latency_ms": 133.32,
+    "review_load_per_hour": 50765.076507650774,
+    "operator_overload_fraction": 1.0,
+    "fatigue_delay_tradeoff_index": 0.2,
+    "true_positive_rate": 1.0,
+    "false_positive_rate": 0.47,
+    "cross_modal_discrepancy_rate": 0.0,
+    "total_actionable_events": 141,
+    "confirmed_defects": 0,
+    "rejected_false_positives": 141,
+    "pending_reviews": 0,
+    "operator_confirmation_precision": 0.0,
+    "optical_degradations_handled": 0,
+    "hardware_degraded_rate": 0.2,
+    "spool_depth_final": 300,
+    "event_loss_rate": 0.0
+  }
+}

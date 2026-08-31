@@ -1,0 +1,31 @@
+{
+  "scenario": "network_partitions",
+  "policy_mode": "FULL_POLICY",
+  "seed": 43,
+  "total_steps": 300,
+  "metrics": {
+    "total_steps": 300,
+    "raw_threshold_crossings": 23,
+    "policy_escalations": 2,
+    "review_events": 33,
+    "actionable_events": 35,
+    "alert_suppression_factor": 0.9130434782608696,
+    "mean_detection_latency_frames": 0.14285714285714285,
+    "mean_detection_latency_ms": 4.761428571428571,
+    "review_load_per_hour": 12601.260126012603,
+    "operator_overload_fraction": 1.0,
+    "fatigue_delay_tradeoff_index": 0.798913043478261,
+    "true_positive_rate": 0.9666666666666667,
+    "false_positive_rate": 0.022222222222222223,
+    "cross_modal_discrepancy_rate": 0.02666666666666667,
+    "total_actionable_events": 35,
+    "confirmed_defects": 26,
+    "rejected_false_positives": 9,
+    "pending_reviews": 0,
+    "operator_confirmation_precision": 0.7428571428571429,
+    "optical_degradations_handled": 0,
+    "hardware_degraded_rate": 0.0,
+    "spool_depth_final": 300,
+    "event_loss_rate": 0.0
+  }
+}

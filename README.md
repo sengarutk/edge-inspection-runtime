@@ -195,3 +195,43 @@ edge-inspection-runtime/
 ## 7. License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Research Framework & Reproduction
+
+`edge-inspection-runtime` includes a full research-grade experimental framework to benchmark edge inspection policies against realistic industrial failure modes and evaluate human operator cognitive workload tradeoffs.
+
+### 1. Configurable Decision Policies
+The runtime implements 6 discrete policy modes:
+- `BASELINE`: Instantaneous single-frame thresholding ($v_t \ge 0.80$).
+- `EMA_ONLY`: Exponential moving average smoothing on visual scores ($\alpha_v = 0.35$).
+- `EMA_KOFN`: EMA smoothing with $k$-of-$N$ confirmation window ($k=4, N=10$).
+- `NO_COOLDOWN`: Multi-modal cyber-physical cascade with alert cooldown suppressed ($C=0$).
+- `NO_FUSION`: Vision-only temporal cascade bypassing physical sensor telemetry.
+- `FULL_POLICY`: Complete multi-modal cascade combining optical health gating, sensor telemetry fusion, cross-modal divergence, machine state gating, and anti-fatigue cooldown FSM ($C=15$).
+
+### 2. Standardized Scenario Workloads (`configs/scenarios/`)
+Benchmarking is conducted across 6 standardized 300-step ($10\,\text{s}$ at $30\,\text{FPS}$) industrial workloads:
+1. `nominal.yaml`: Steady-state production baseline.
+2. `transient_glitches.yaml`: 1-2 frame optical blurs, bright strobes, and camera flickers.
+3. `sustained_defects.yaml`: Continuous 60-step surface fractures.
+4. `sensor_drift_dropout.yaml`: Linear thermal drift and current sensor disconnection.
+5. `network_partitions.yaml`: 60-step edge MQTT broker disconnection during defect bursts.
+6. `distribution_shift.yaml`: Cosmetic visual domain shifts with nominal mechanical operation.
+
+### 3. Automated Reproduction Commands
+To run the automated 108-experiment Monte Carlo ablation benchmark ($6\text{ scenarios} \times 6\text{ policies} \times 3\text{ seeds}$):
+```bash
+# Run the complete ablation study
+python scripts/run_ablation_study.py
+
+# Generate publication-grade Pareto curve & workload figures
+python scripts/generate_plots.py
+```
+
+### 4. Research Artifacts & Manuscripts
+- **Aggregated Benchmark Summary:** [`results/ablation/ablation_summary.json`](results/ablation/ablation_summary.json)
+- **LaTeX Publication Table:** [`results/ablation/ablation_table.tex`](results/ablation/ablation_table.tex)
+- **Markdown Results Table:** [`results/ablation/ablation_table.md`](results/ablation/ablation_table.md)
+- **Multi-Panel Pareto Figure:** [`docs/figures/pareto_workload_analysis.png`](docs/figures/pareto_workload_analysis.png)
+- **Full Academic Technical Report Draft:** [`docs/paper-draft.md`](docs/paper-draft.md)
+- **IEEE-Formatted Manuscript:** [`docs/paper.tex`](docs/paper.tex)

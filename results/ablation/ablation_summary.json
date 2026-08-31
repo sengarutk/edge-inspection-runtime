@@ -1,0 +1,3040 @@
+{
+  "scenarios": {
+    "sustained_defects": {
+      "BASELINE": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 43204.32043204321,
+          "std": 0.0,
+          "values": [
+            43204.32043204321,
+            43204.32043204321,
+            43204.32043204321
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_ONLY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0031446540880503138,
+          "std": 0.0054467006527323175,
+          "values": [
+            0.0,
+            0.009433962264150941,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.11698253437383872,
+          "std": 0.04511970725912072,
+          "values": [
+            0.13043478260869565,
+            0.15384615384615385,
+            0.06666666666666667
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 42964.29642964297,
+          "std": 207.86688359662617,
+          "values": [
+            42844.28442844285,
+            43204.32043204321,
+            42844.28442844285
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.002725366876310272,
+          "std": 0.004720473899034675,
+          "values": [
+            0.0,
+            0.008176100628930816,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9777777777777777,
+          "std": 0.004811252243246864,
+          "values": [
+            0.975,
+            0.9833333333333333,
+            0.975
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.011111111111111112,
+          "std": 0.0,
+          "values": [
+            0.011111111111111112,
+            0.011111111111111112,
+            0.011111111111111112
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_FUSION": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.9206288010073278,
+          "std": 0.00444457364622324,
+          "values": [
+            0.9245283018867925,
+            0.9157894736842105,
+            0.9215686274509804
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.11698253437383872,
+          "std": 0.04511970725912072,
+          "values": [
+            0.15384615384615385,
+            0.13043478260869565,
+            0.06666666666666667
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 46564.65646564657,
+          "std": 207.86688359662617,
+          "values": [
+            46804.68046804681,
+            46444.64446444645,
+            46444.64446444645
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8251166357867976,
+          "std": 0.03393910795117046,
+          "values": [
+            0.8012578616352202,
+            0.8101214574898785,
+            0.8639705882352942
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9777777777777777,
+          "std": 0.004811252243246864,
+          "values": [
+            0.9833333333333333,
+            0.975,
+            0.975
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.06666666666666667,
+          "std": 0.0,
+          "values": [
+            0.06666666666666667,
+            0.06666666666666667,
+            0.06666666666666667
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_COOLDOWN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.10248978075065032,
+          "std": 0.04561827865953313,
+          "values": [
+            0.06666666666666667,
+            0.15384615384615385,
+            0.08695652173913043
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 46804.68046804681,
+          "std": 0.0,
+          "values": [
+            46804.68046804681,
+            46804.68046804681,
+            46804.68046804681
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9833333333333333,
+          "std": 0.0,
+          "values": [
+            0.9833333333333333,
+            0.9833333333333333,
+            0.9833333333333333
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.06666666666666667,
+          "std": 0.0,
+          "values": [
+            0.06666666666666667,
+            0.06666666666666667,
+            0.06666666666666667
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.052222222222222225,
+          "std": 0.0050917507721731535,
+          "values": [
+            0.05333333333333334,
+            0.056666666666666664,
+            0.04666666666666667
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "FULL_POLICY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.9206288010073278,
+          "std": 0.00444457364622324,
+          "values": [
+            0.9245283018867925,
+            0.9215686274509804,
+            0.9157894736842105
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.10248978075065032,
+          "std": 0.04561827865953313,
+          "values": [
+            0.15384615384615385,
+            0.06666666666666667,
+            0.08695652173913043
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 46804.68046804681,
+          "std": 0.0,
+          "values": [
+            46804.68046804681,
+            46804.68046804681,
+            46804.68046804681
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.835918255219996,
+          "std": 0.03187430576140163,
+          "values": [
+            0.8012578616352202,
+            0.8639705882352942,
+            0.8425263157894737
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9833333333333333,
+          "std": 0.0,
+          "values": [
+            0.9833333333333333,
+            0.9833333333333333,
+            0.9833333333333333
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.06666666666666667,
+          "std": 0.0,
+          "values": [
+            0.06666666666666667,
+            0.06666666666666667,
+            0.06666666666666667
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.052222222222222225,
+          "std": 0.0050917507721731535,
+          "values": [
+            0.056666666666666664,
+            0.05333333333333334,
+            0.04666666666666667
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_KOFN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.11698253437383872,
+          "std": 0.04511970725912072,
+          "values": [
+            0.06666666666666667,
+            0.15384615384615385,
+            0.13043478260869565
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 46564.65646564657,
+          "std": 207.86688359662617,
+          "values": [
+            46444.64446444645,
+            46804.68046804681,
+            46444.64446444645
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9777777777777777,
+          "std": 0.004811252243246864,
+          "values": [
+            0.975,
+            0.9833333333333333,
+            0.975
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.06666666666666667,
+          "std": 0.0,
+          "values": [
+            0.06666666666666667,
+            0.06666666666666667,
+            0.06666666666666667
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "sensor_drift_dropout": {
+      "BASELINE": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.2,
+          "std": 0.0,
+          "values": [
+            0.2,
+            0.2,
+            0.2
+          ]
+        }
+      },
+      "EMA_ONLY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.2,
+          "std": 0.0,
+          "values": [
+            0.2,
+            0.2,
+            0.2
+          ]
+        }
+      },
+      "NO_FUSION": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_COOLDOWN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 4.0,
+          "std": 0.0,
+          "values": [
+            4.0,
+            4.0,
+            4.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 50885.088508850895,
+          "std": 207.86688359662617,
+          "values": [
+            50765.076507650774,
+            51125.112511251136,
+            50765.076507650774
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.2,
+          "std": 0.0,
+          "values": [
+            0.2,
+            0.2,
+            0.2
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.4711111111111111,
+          "std": 0.001924500897298765,
+          "values": [
+            0.47,
+            0.47333333333333333,
+            0.47
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.2,
+          "std": 0.0,
+          "values": [
+            0.2,
+            0.2,
+            0.2
+          ]
+        }
+      },
+      "FULL_POLICY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 4.0,
+          "std": 0.0,
+          "values": [
+            4.0,
+            4.0,
+            4.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 50885.088508850895,
+          "std": 207.86688359662617,
+          "values": [
+            51125.112511251136,
+            50765.076507650774,
+            50765.076507650774
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.2,
+          "std": 0.0,
+          "values": [
+            0.2,
+            0.2,
+            0.2
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.4711111111111111,
+          "std": 0.001924500897298765,
+          "values": [
+            0.47333333333333333,
+            0.47,
+            0.47
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.2,
+          "std": 0.0,
+          "values": [
+            0.2,
+            0.2,
+            0.2
+          ]
+        }
+      },
+      "EMA_KOFN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.2,
+          "std": 0.0,
+          "values": [
+            0.2,
+            0.2,
+            0.2
+          ]
+        }
+      }
+    },
+    "distribution_shift": {
+      "BASELINE": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 36003.600360036005,
+          "std": 0.0,
+          "values": [
+            36003.600360036005,
+            36003.600360036005,
+            36003.600360036005
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.3333333333333333,
+          "std": 0.0,
+          "values": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_ONLY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.06722689075630252,
+          "std": 0.007277524401549903,
+          "values": [
+            0.058823529411764705,
+            0.07142857142857142,
+            0.07142857142857142
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 36003.600360036005,
+          "std": 0.0,
+          "values": [
+            36003.600360036005,
+            36003.600360036005,
+            36003.600360036005
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.3333333333333333,
+          "std": 0.0,
+          "values": [
+            0.3333333333333333,
+            0.3333333333333333,
+            0.3333333333333333
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_FUSION": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.9155891005884002,
+          "std": 0.0030529901176160113,
+          "values": [
+            0.9186046511627907,
+            0.9125,
+            0.9156626506024097
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.06722689075630252,
+          "std": 0.007277524401549903,
+          "values": [
+            0.07142857142857142,
+            0.058823529411764705,
+            0.07142857142857142
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 37803.78037803781,
+          "std": 0.0,
+          "values": [
+            37803.78037803781,
+            37803.78037803781,
+            37803.78037803781
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8579294568454697,
+          "std": 0.0036267137416122045,
+          "values": [
+            0.8573643410852713,
+            0.8618055555555555,
+            0.8546184738955824
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.35,
+          "std": 0.0,
+          "values": [
+            0.35,
+            0.35,
+            0.35
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_COOLDOWN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.06722689075630252,
+          "std": 0.007277524401549903,
+          "values": [
+            0.07142857142857142,
+            0.07142857142857142,
+            0.058823529411764705
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 37803.78037803781,
+          "std": 0.0,
+          "values": [
+            37803.78037803781,
+            37803.78037803781,
+            37803.78037803781
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.35,
+          "std": 0.0,
+          "values": [
+            0.35,
+            0.35,
+            0.35
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.02777777777777778,
+          "std": 0.005091750772173154,
+          "values": [
+            0.02666666666666667,
+            0.03333333333333333,
+            0.023333333333333334
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "FULL_POLICY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.9155891005884002,
+          "std": 0.0030529901176160113,
+          "values": [
+            0.9186046511627907,
+            0.9156626506024097,
+            0.9125
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.06722689075630252,
+          "std": 0.007277524401549903,
+          "values": [
+            0.07142857142857142,
+            0.07142857142857142,
+            0.058823529411764705
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 37803.78037803781,
+          "std": 0.0,
+          "values": [
+            37803.78037803781,
+            37803.78037803781,
+            37803.78037803781
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8579294568454697,
+          "std": 0.0036267137416122045,
+          "values": [
+            0.8573643410852713,
+            0.8546184738955824,
+            0.8618055555555555
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.35,
+          "std": 0.0,
+          "values": [
+            0.35,
+            0.35,
+            0.35
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.02777777777777778,
+          "std": 0.005091750772173154,
+          "values": [
+            0.03333333333333333,
+            0.02666666666666667,
+            0.023333333333333334
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_KOFN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.06722689075630252,
+          "std": 0.007277524401549903,
+          "values": [
+            0.07142857142857142,
+            0.07142857142857142,
+            0.058823529411764705
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 37803.78037803781,
+          "std": 0.0,
+          "values": [
+            37803.78037803781,
+            37803.78037803781,
+            37803.78037803781
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.35,
+          "std": 0.0,
+          "values": [
+            0.35,
+            0.35,
+            0.35
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "nominal": {
+      "BASELINE": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_ONLY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_FUSION": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_COOLDOWN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "FULL_POLICY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_KOFN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "transient_glitches": {
+      "BASELINE": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 1800.1800180018004,
+          "std": 0.0,
+          "values": [
+            1800.1800180018004,
+            1800.1800180018004,
+            1800.1800180018004
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.016666666666666666,
+          "std": 0.0,
+          "values": [
+            0.016666666666666666,
+            0.016666666666666666,
+            0.016666666666666666
+          ]
+        }
+      },
+      "EMA_ONLY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.3333333333333333,
+          "std": 0.5773502691896257,
+          "values": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 360.03600360036006,
+          "std": 360.03600360036006,
+          "values": [
+            360.03600360036006,
+            720.0720072007201,
+            0.0
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.6666666666666666,
+          "std": 0.5773502691896257,
+          "values": [
+            1.0,
+            1.0,
+            0.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8333333333333334,
+          "std": 0.28867513459481287,
+          "values": [
+            1.0,
+            0.5,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.2,
+          "std": 0.2,
+          "values": [
+            0.2,
+            0.4,
+            0.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.016666666666666666,
+          "std": 0.0,
+          "values": [
+            0.016666666666666666,
+            0.016666666666666666,
+            0.016666666666666666
+          ]
+        }
+      },
+      "NO_FUSION": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.3333333333333333,
+          "std": 0.5773502691896257,
+          "values": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 2160.2160216021607,
+          "std": 360.0360036003601,
+          "values": [
+            2520.2520252025206,
+            2160.2160216021607,
+            1800.1800180018004
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8333333333333334,
+          "std": 0.28867513459481287,
+          "values": [
+            0.5,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.2,
+          "std": 0.2,
+          "values": [
+            0.4,
+            0.2,
+            0.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.01694915254237288,
+          "std": 0.0,
+          "values": [
+            0.01694915254237288,
+            0.01694915254237288,
+            0.01694915254237288
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.016666666666666666,
+          "std": 0.0,
+          "values": [
+            0.016666666666666666,
+            0.016666666666666666,
+            0.016666666666666666
+          ]
+        }
+      },
+      "NO_COOLDOWN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.3333333333333333,
+          "std": 0.5773502691896257,
+          "values": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 2520.2520252025206,
+          "std": 0.0,
+          "values": [
+            2520.2520252025206,
+            2520.2520252025206,
+            2520.2520252025206
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8333333333333334,
+          "std": 0.28867513459481287,
+          "values": [
+            1.0,
+            0.5,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.4,
+          "std": 0.0,
+          "values": [
+            0.4,
+            0.4,
+            0.4
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.01694915254237288,
+          "std": 0.0,
+          "values": [
+            0.01694915254237288,
+            0.01694915254237288,
+            0.01694915254237288
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.006666666666666667,
+          "std": 0.0,
+          "values": [
+            0.006666666666666667,
+            0.006666666666666667,
+            0.006666666666666667
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.016666666666666666,
+          "std": 0.0,
+          "values": [
+            0.016666666666666666,
+            0.016666666666666666,
+            0.016666666666666666
+          ]
+        }
+      },
+      "FULL_POLICY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.3333333333333333,
+          "std": 0.5773502691896257,
+          "values": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 2520.2520252025206,
+          "std": 0.0,
+          "values": [
+            2520.2520252025206,
+            2520.2520252025206,
+            2520.2520252025206
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8333333333333334,
+          "std": 0.28867513459481287,
+          "values": [
+            0.5,
+            1.0,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.4,
+          "std": 0.0,
+          "values": [
+            0.4,
+            0.4,
+            0.4
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.01694915254237288,
+          "std": 0.0,
+          "values": [
+            0.01694915254237288,
+            0.01694915254237288,
+            0.01694915254237288
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.006666666666666667,
+          "std": 0.0,
+          "values": [
+            0.006666666666666667,
+            0.006666666666666667,
+            0.006666666666666667
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.016666666666666666,
+          "std": 0.0,
+          "values": [
+            0.016666666666666666,
+            0.016666666666666666,
+            0.016666666666666666
+          ]
+        }
+      },
+      "EMA_KOFN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.3333333333333333,
+          "std": 0.5773502691896257,
+          "values": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 360.03600360036006,
+          "std": 360.03600360036006,
+          "values": [
+            0.0,
+            720.0720072007201,
+            360.03600360036006
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 0.6666666666666666,
+          "std": 0.5773502691896257,
+          "values": [
+            0.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.8333333333333334,
+          "std": 0.28867513459481287,
+          "values": [
+            1.0,
+            0.5,
+            1.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.2,
+          "std": 0.2,
+          "values": [
+            0.0,
+            0.4,
+            0.2
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.016666666666666666,
+          "std": 0.0,
+          "values": [
+            0.016666666666666666,
+            0.016666666666666666,
+            0.016666666666666666
+          ]
+        }
+      }
+    },
+    "network_partitions": {
+      "BASELINE": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 10801.080108010803,
+          "std": 0.0,
+          "values": [
+            10801.080108010803,
+            10801.080108010803,
+            10801.080108010803
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_ONLY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.03897435897435897,
+          "std": 0.03847179350463803,
+          "values": [
+            0.040000000000000036,
+            0.0,
+            0.07692307692307687
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.18095238095238095,
+          "std": 0.03299144395369291,
+          "values": [
+            0.2,
+            0.14285714285714285,
+            0.2
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 10801.080108010803,
+          "std": 0.0,
+          "values": [
+            10801.080108010803,
+            10801.080108010803,
+            10801.080108010803
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.03247863247863248,
+          "std": 0.0320598279205317,
+          "values": [
+            0.03333333333333337,
+            0.0,
+            0.06410256410256407
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9666666666666667,
+          "std": 0.0,
+          "values": [
+            0.9666666666666667,
+            0.9666666666666667,
+            0.9666666666666667
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.003703703703703704,
+          "std": 0.0,
+          "values": [
+            0.003703703703703704,
+            0.003703703703703704,
+            0.003703703703703704
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_FUSION": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.9187068004459309,
+          "std": 0.00514021181802668,
+          "values": [
+            0.9130434782608696,
+            0.92,
+            0.9230769230769231
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.18095238095238095,
+          "std": 0.03299144395369291,
+          "values": [
+            0.14285714285714285,
+            0.2,
+            0.2
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 12601.260126012603,
+          "std": 0.0,
+          "values": [
+            12601.260126012603,
+            12601.260126012603,
+            12601.260126012603
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.778270159791899,
+          "std": 0.017923173286455492,
+          "values": [
+            0.798913043478261,
+            0.7666666666666667,
+            0.7692307692307693
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9666666666666667,
+          "std": 0.0,
+          "values": [
+            0.9666666666666667,
+            0.9666666666666667,
+            0.9666666666666667
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.022222222222222223,
+          "std": 0.0,
+          "values": [
+            0.022222222222222223,
+            0.022222222222222223,
+            0.022222222222222223
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "NO_COOLDOWN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.18095238095238095,
+          "std": 0.03299144395369291,
+          "values": [
+            0.2,
+            0.14285714285714285,
+            0.2
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 12601.260126012603,
+          "std": 0.0,
+          "values": [
+            12601.260126012603,
+            12601.260126012603,
+            12601.260126012603
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9666666666666667,
+          "std": 0.0,
+          "values": [
+            0.9666666666666667,
+            0.9666666666666667,
+            0.9666666666666667
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.022222222222222223,
+          "std": 0.0,
+          "values": [
+            0.022222222222222223,
+            0.022222222222222223,
+            0.022222222222222223
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.02666666666666667,
+          "std": 0.0,
+          "values": [
+            0.02666666666666667,
+            0.02666666666666667,
+            0.02666666666666667
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "FULL_POLICY": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.9187068004459309,
+          "std": 0.00514021181802668,
+          "values": [
+            0.9130434782608696,
+            0.9230769230769231,
+            0.92
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.18095238095238095,
+          "std": 0.03299144395369291,
+          "values": [
+            0.14285714285714285,
+            0.2,
+            0.2
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 12601.260126012603,
+          "std": 0.0,
+          "values": [
+            12601.260126012603,
+            12601.260126012603,
+            12601.260126012603
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.778270159791899,
+          "std": 0.017923173286455492,
+          "values": [
+            0.798913043478261,
+            0.7692307692307693,
+            0.7666666666666667
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9666666666666667,
+          "std": 0.0,
+          "values": [
+            0.9666666666666667,
+            0.9666666666666667,
+            0.9666666666666667
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.022222222222222223,
+          "std": 0.0,
+          "values": [
+            0.022222222222222223,
+            0.022222222222222223,
+            0.022222222222222223
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.02666666666666667,
+          "std": 0.0,
+          "values": [
+            0.02666666666666667,
+            0.02666666666666667,
+            0.02666666666666667
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "EMA_KOFN": {
+        "num_runs": 3,
+        "alert_suppression_factor": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mean_detection_latency_frames": {
+          "mean": 0.18095238095238095,
+          "std": 0.03299144395369291,
+          "values": [
+            0.2,
+            0.14285714285714285,
+            0.2
+          ]
+        },
+        "review_load_per_hour": {
+          "mean": 12601.260126012603,
+          "std": 0.0,
+          "values": [
+            12601.260126012603,
+            12601.260126012603,
+            12601.260126012603
+          ]
+        },
+        "operator_overload_fraction": {
+          "mean": 1.0,
+          "std": 0.0,
+          "values": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "fatigue_delay_tradeoff_index": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "true_positive_rate": {
+          "mean": 0.9666666666666667,
+          "std": 0.0,
+          "values": [
+            0.9666666666666667,
+            0.9666666666666667,
+            0.9666666666666667
+          ]
+        },
+        "false_positive_rate": {
+          "mean": 0.022222222222222223,
+          "std": 0.0,
+          "values": [
+            0.022222222222222223,
+            0.022222222222222223,
+            0.022222222222222223
+          ]
+        },
+        "cross_modal_discrepancy_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "hardware_degraded_rate": {
+          "mean": 0.0,
+          "std": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  }
+}

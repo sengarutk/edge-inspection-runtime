@@ -1,0 +1,31 @@
+{
+  "scenario": "sustained_defects",
+  "policy_mode": "EMA_ONLY",
+  "seed": 44,
+  "total_steps": 300,
+  "metrics": {
+    "total_steps": 300,
+    "raw_threshold_crossings": 95,
+    "policy_escalations": 109,
+    "review_events": 10,
+    "actionable_events": 119,
+    "alert_suppression_factor": 0.0,
+    "mean_detection_latency_frames": 0.13043478260869565,
+    "mean_detection_latency_ms": 4.347391304347826,
+    "review_load_per_hour": 42844.28442844285,
+    "operator_overload_fraction": 1.0,
+    "fatigue_delay_tradeoff_index": 0.0,
+    "true_positive_rate": 0.975,
+    "false_positive_rate": 0.011111111111111112,
+    "cross_modal_discrepancy_rate": 0.0,
+    "total_actionable_events": 119,
+    "confirmed_defects": 95,
+    "rejected_false_positives": 24,
+    "pending_reviews": 0,
+    "operator_confirmation_precision": 0.7983193277310925,
+    "optical_degradations_handled": 0,
+    "hardware_degraded_rate": 0.0,
+    "spool_depth_final": 300,
+    "event_loss_rate": 0.0
+  }
+}

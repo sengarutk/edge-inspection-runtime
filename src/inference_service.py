@@ -108,6 +108,10 @@ class InferenceEngine:
             logger.error(f"Failed to initialize ONNX session from {path}: {exc}")
             raise InferenceEngineError(f"ONNX initialization failed: {exc}") from exc
 
+    def infer(self, frame: np.ndarray, inject_anomaly: bool = False) -> InferenceResult:
+        """Alias for run_inference."""
+        return self.run_inference(frame=frame, inject_anomaly=inject_anomaly)
+
     def check_optical_health(self, frame: np.ndarray) -> OpticalHealthStatus:
         """Validate optical health of an incoming camera frame.
 

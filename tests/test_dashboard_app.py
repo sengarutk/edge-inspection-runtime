@@ -2,12 +2,13 @@
 
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+import cv2
 import numpy as np
 import pytest
 from streamlit.testing.v1 import AppTest
 
 from src.audit_log import AuditLogDB
-from src.config import AuditConfig
+from src.config import AuditConfig, load_mqtt_config
 from src.dashboard.app import get_database, get_evidence_mgr, get_system_status
 from src.evidence_manager import EvidenceManager
 from src.inference_service import InferenceResult, OpticalHealthStatus

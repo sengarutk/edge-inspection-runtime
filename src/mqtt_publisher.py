@@ -156,6 +156,14 @@ class ResilientMQTTPublisher:
         self.spooler.enqueue(topic, payload_str, effective_qos)
         return True
 
+    def publish(self, topic: str, payload: Union[Dict[str, Any], str], qos: Optional[int] = None) -> bool:
+        """Alias for publish_event."""
+        return self.publish_event(topic=topic, payload=payload, qos=qos)
+
+    def close(self) -> None:
+        """Alias for stop."""
+        self.stop()
+
     def publish_heartbeat(self, status: Dict[str, Any]) -> bool:
         """Publish periodic component liveness heartbeat."""
         return self.publish_event(

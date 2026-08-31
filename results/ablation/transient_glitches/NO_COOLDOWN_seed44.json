@@ -1,0 +1,31 @@
+{
+  "scenario": "transient_glitches",
+  "policy_mode": "NO_COOLDOWN",
+  "seed": 44,
+  "total_steps": 300,
+  "metrics": {
+    "total_steps": 300,
+    "raw_threshold_crossings": 2,
+    "policy_escalations": 0,
+    "review_events": 7,
+    "actionable_events": 7,
+    "alert_suppression_factor": 1.0,
+    "mean_detection_latency_frames": 0.0,
+    "mean_detection_latency_ms": 0.0,
+    "review_load_per_hour": 2520.2520252025206,
+    "operator_overload_fraction": 1.0,
+    "fatigue_delay_tradeoff_index": 1.0,
+    "true_positive_rate": 0.4,
+    "false_positive_rate": 0.01694915254237288,
+    "cross_modal_discrepancy_rate": 0.006666666666666667,
+    "total_actionable_events": 7,
+    "confirmed_defects": 2,
+    "rejected_false_positives": 5,
+    "pending_reviews": 0,
+    "operator_confirmation_precision": 0.2857142857142857,
+    "optical_degradations_handled": 5,
+    "hardware_degraded_rate": 0.016666666666666666,
+    "spool_depth_final": 300,
+    "event_loss_rate": 0.0
+  }
+}

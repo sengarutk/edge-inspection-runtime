@@ -1,0 +1,13 @@
+name: "transient_glitches"
+description: "Isolated optical flickers and strobe lighting noise (1-2 frames duration)."
+total_steps: 300
+machine_state_schedule:
+  - { start: 0, end: 300, state: "RUNNING" }
+injected_faults:
+  - { fault_type: "OPTICAL_BLUR", start_step: 45, duration_steps: 2, intensity: 1.5 }
+  - { fault_type: "OPTICAL_OCCLUSION_BRIGHT", start_step: 120, duration_steps: 1, intensity: 1.0 }
+  - { fault_type: "OPTICAL_BLUR", start_step: 210, duration_steps: 2, intensity: 1.2 }
+vision_defect_schedule:
+  - { start: 80, end: 82 }
+  - { start: 160, end: 161 }
+  - { start: 250, end: 252 }
