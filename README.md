@@ -1,7 +1,7 @@
 # Flagship 4: Industrial Edge Inspection Runtime & Reliability System
 
-[![Tests: Passing](https://img.shields.io/badge/Tests-80%2F80%20Passing-brightgreen.svg)](https://github.com/sengar/edge-inspection-runtime)
-[![Coverage: 95%+](https://img.shields.io/badge/Coverage-95%25-success.svg)](https://github.com/sengar/edge-inspection-runtime)
+[![Tests: Passing](https://img.shields.io/badge/Tests-113%2F113%20Passing-brightgreen.svg)](https://github.com/sengar/edge-inspection-runtime)
+[![Coverage: 93%+](https://img.shields.io/badge/Coverage-93%25-success.svg)](https://github.com/sengar/edge-inspection-runtime)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 [![Zero Data Loss: Verified](https://img.shields.io/badge/Zero--Data--Loss-Verified-orange.svg)](docs/architecture.md)
@@ -198,15 +198,17 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ## Research Framework & Reproduction
 
-`edge-inspection-runtime` includes a full research-grade experimental framework to benchmark edge inspection policies against realistic industrial failure modes and evaluate human operator cognitive workload tradeoffs.
+`edge-inspection-runtime` includes a full research-grade experimental framework to benchmark edge inspection policies against realistic industrial failure modes, evaluate human operator cognitive workload tradeoffs, and profile hard deadline SLA compliance.
 
-### 1. Configurable Decision Policies
-The runtime implements 6 discrete policy modes:
+### 1. Configurable Decision Policies (8 Variants)
+The runtime implements 8 discrete policy modes:
 - `BASELINE`: Instantaneous single-frame thresholding ($v_t \ge 0.80$).
 - `EMA_ONLY`: Exponential moving average smoothing on visual scores ($\alpha_v = 0.35$).
 - `EMA_KOFN`: EMA smoothing with $k$-of-$N$ confirmation window ($k=4, N=10$).
 - `NO_COOLDOWN`: Multi-modal cyber-physical cascade with alert cooldown suppressed ($C=0$).
 - `NO_FUSION`: Vision-only temporal cascade bypassing physical sensor telemetry.
+- `NO_DIVERGENCE`: Multi-modal cascade bypassing cross-modal discrepancy checks.
+- `NO_STATE_GATING`: Multi-modal cascade bypassing operational machine state suppression.
 - `FULL_POLICY`: Complete multi-modal cascade combining optical health gating, sensor telemetry fusion, cross-modal divergence, machine state gating, and anti-fatigue cooldown FSM ($C=15$).
 
 ### 2. Standardized Scenario Workloads (`configs/scenarios/`)
@@ -218,20 +220,22 @@ Benchmarking is conducted across 6 standardized 300-step ($10\,\text{s}$ at $30\
 5. `network_partitions.yaml`: 60-step edge MQTT broker disconnection during defect bursts.
 6. `distribution_shift.yaml`: Cosmetic visual domain shifts with nominal mechanical operation.
 
-### 3. Automated Reproduction Commands
-To run the automated 108-experiment Monte Carlo ablation benchmark ($6\text{ scenarios} \times 6\text{ policies} \times 3\text{ seeds}$):
+### 3. One-Command Automated Reproduction Pipeline
+To execute the complete research reproduction suite (environment verification, 113-test test suite, 144-run Monte Carlo ablation across 8 policies, 216-run parameter sensitivity sweep, disk spooler stress testing, publication vector plot rendering, and SHA-256 checksum verification):
 ```bash
-# Run the complete ablation study
-python scripts/run_ablation_study.py
-
-# Generate publication-grade Pareto curve & workload figures
-python scripts/generate_plots.py
+./scripts/reproduce_main_results.sh
 ```
 
 ### 4. Research Artifacts & Manuscripts
+- **Reproducibility Pipeline:** [`scripts/reproduce_main_results.sh`](scripts/reproduce_main_results.sh)
+- **Data Card & Provenance:** [`docs/data_card.md`](docs/data_card.md)
+- **Threshold Governance Manifest:** [`configs/threshold_manifest.json`](configs/threshold_manifest.json)
 - **Aggregated Benchmark Summary:** [`results/ablation/ablation_summary.json`](results/ablation/ablation_summary.json)
+- **Parameter Sensitivity Summary:** [`results/sensitivity/sensitivity_summary.json`](results/sensitivity/sensitivity_summary.json)
+- **Disk Spooler Stress Summary:** [`results/spooler_stress/spooler_stress_summary.json`](results/spooler_stress/spooler_stress_summary.json)
 - **LaTeX Publication Table:** [`results/ablation/ablation_table.tex`](results/ablation/ablation_table.tex)
 - **Markdown Results Table:** [`results/ablation/ablation_table.md`](results/ablation/ablation_table.md)
-- **Multi-Panel Pareto Figure:** [`docs/figures/pareto_workload_analysis.png`](docs/figures/pareto_workload_analysis.png)
+- **SHA-256 Checksums:** [`results/CHECKSUMS.txt`](results/CHECKSUMS.txt)
+- **Publication Figures (PDF & PNG):** [`docs/figures/`](docs/figures/)
 - **Full Academic Technical Report Draft:** [`docs/paper-draft.md`](docs/paper-draft.md)
 - **IEEE-Formatted Manuscript:** [`docs/paper.tex`](docs/paper.tex)

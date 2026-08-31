@@ -180,9 +180,15 @@ def test_triage_actions_and_empty_state(tmp_path: Path) -> None:
 
 
 def test_streamlit_app_rendering(tmp_path: Path) -> None:
-    """Test Streamlit app rendering using AppTest with sufficient timeout."""
+    """Test Streamlit app rendering using AppTest with clean disconnect."""
     app_file = Path(__file__).parent.parent / "src" / "dashboard" / "app.py"
 
     at = AppTest.from_file(str(app_file), default_timeout=15)
-    at.run(timeout=15)
-    assert not at.exception
+    try:
+        at.run(timeout=15)
+        assert not at.exception
+    finally:
+        try:
+            at.disconnect()
+        except Exception:
+            pass

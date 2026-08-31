@@ -50,7 +50,7 @@ class AuditLogDB:
         logger.info(f"Initialized AuditLogDB at {self.db_path}")
 
     def _init_db(self) -> None:
-        """Create audit log schema and indices."""
+        """Create audit, telemetry, review, and health tables if not existing."""
         with self._lock, self._conn:
             self._conn.execute(
                 """
@@ -67,11 +67,11 @@ class AuditLogDB:
                     sensor_raw REAL,
                     sensor_ema REAL,
                     cooldown_remaining INTEGER,
-                    is_degraded INTEGER,
+                    is_degraded INTEGER DEFAULT 0,
                     frame_id TEXT,
                     reading_id TEXT,
                     evidence_uri TEXT,
-                    raw_payload TEXT NOT NULL,
+                    raw_payload TEXT,
                     review_status TEXT DEFAULT 'PENDING',
                     operator_notes TEXT,
                     reviewed_at TEXT
@@ -87,7 +87,8 @@ class AuditLogDB:
                     temperature_c REAL,
                     current_amps REAL,
                     vision_score REAL,
-                    sensor_score REAL
+                    sensor_score REAL,
+                    latency_ms REAL
                 );
                 """
             )
@@ -103,11 +104,25 @@ class AuditLogDB:
                 """
             )
             self._conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_risk_timestamp ON risk_events(timestamp_utc DESC);"
+                "CREATE INDEX IF NOT EXISTS idx_events_time ON risk_events(timestamp_utc DESC);"
             )
             self._conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_risk_state ON risk_events(risk_state);"
+                "CREATE INDEX IF NOT EXISTS idx_telemetry_time ON telemetry_stream(timestamp_utc DESC);"
             )
+            self._conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_health_time ON system_health(timestamp_utc DESC);"
+            )
+
+            # Backward-compatible column migration
+            try:
+                cursor = self._conn.cursor()
+                cursor.execute("PRAGMA table_info(telemetry_stream);")
+                col_names = [col[1] for col in cursor.fetchall()]
+                if "latency_ms" not in col_names:
+                    cursor.execute("ALTER TABLE telemetry_stream ADD COLUMN latency_ms REAL;")
+                    self._conn.commit()
+            except Exception:
+                pass
 
     def insert_risk_event(self, decision: Union[PolicyDecision, Dict[str, Any]]) -> str:
         """Insert or update a policy risk decision into the audit log.
@@ -179,14 +194,15 @@ class AuditLogDB:
             Row ID inserted.
         """
         now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+        lat_ms = float(inf_result.latency_ms) if inf_result.latency_ms is not None else 0.0
         with self._lock, self._conn:
             cursor = self._conn.execute(
                 """
                 INSERT INTO telemetry_stream (
                     timestamp_utc, vibration_rms, temperature_c, current_amps,
-                    vision_score, sensor_score
+                    vision_score, sensor_score, latency_ms
                 )
-                VALUES (?, ?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?, ?);
                 """,
                 (
                     now_utc,
@@ -195,6 +211,7 @@ class AuditLogDB:
                     reading.current_amps,
                     inf_result.vision_score,
                     reading.sensor_score,
+                    lat_ms,
                 ),
             )
             return cursor.lastrowid or 0
@@ -289,7 +306,7 @@ class AuditLogDB:
             cursor = self._conn.cursor()
             cursor.execute(
                 """
-                SELECT id, timestamp_utc, vibration_rms, temperature_c, current_amps, vision_score, sensor_score
+                SELECT id, timestamp_utc, vibration_rms, temperature_c, current_amps, vision_score, sensor_score, latency_ms
                 FROM telemetry_stream
                 ORDER BY id DESC
                 LIMIT ?;
@@ -297,7 +314,19 @@ class AuditLogDB:
                 (limit,),
             )
             rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+            return [
+                {
+                    "id": r[0],
+                    "timestamp_utc": r[1],
+                    "vibration_rms": r[2],
+                    "temperature_c": r[3],
+                    "current_amps": r[4],
+                    "vision_score": r[5],
+                    "sensor_score": r[6],
+                    "latency_ms": r[7] if len(r) > 7 and r[7] is not None else 8.0,
+                }
+                for r in rows
+            ]
 
     def query_recent_health(self, limit: int = 50) -> List[Dict[str, Any]]:
         """Query recent component health logs.

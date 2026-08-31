@@ -453,7 +453,8 @@ class TemporalPolicyEngine:
             )
 
         # ---------------------------------------------------------------------
-        # BRANCH 5: NO_COOLDOWN & BRANCH 6: FULL_POLICY (Multi-Modal Cascades)
+        # MULTI-MODAL CASCADE BRANCHES:
+        # NO_COOLDOWN, NO_DIVERGENCE, NO_STATE_GATING, FULL_POLICY
         # ---------------------------------------------------------------------
         # Step A: Update Smoothing & Sliding Windows
         self._update_ema(raw_v, raw_s)
@@ -473,8 +474,10 @@ class TemporalPolicyEngine:
         vision_medium_exceeded = self.vision_ema >= tau_med
         delta_modal = abs(self.vision_ema - self.sensor_ema)
 
-        # Decrement active cooldown at start of step (if in FULL_POLICY mode)
-        if mode == PolicyMode.FULL_POLICY and self.cooldown_counter > 0:
+        has_cooldown = mode in (PolicyMode.FULL_POLICY, PolicyMode.NO_DIVERGENCE, PolicyMode.NO_STATE_GATING)
+
+        # Decrement active cooldown at start of step (if mode supports cooldown)
+        if has_cooldown and self.cooldown_counter > 0:
             self.cooldown_counter -= 1
         elif mode == PolicyMode.NO_COOLDOWN:
             self.cooldown_counter = 0
@@ -522,40 +525,42 @@ class TemporalPolicyEngine:
             self.total_escalations += 1
             if self._prev_machine_state == MachineState.FAULT:
                 diagnostics["incident_latched"] = True
-            if mode == PolicyMode.FULL_POLICY:
+            if has_cooldown:
                 self.cooldown_counter = self.config.cooldown.cooldown_steps
             return build_decision(
                 RiskState.HIGH_SEVERITY, TriggerReason.CRITICAL_MACHINE_FAULT, is_system_degraded,
                 self.vision_ema, self.sensor_ema, self.cooldown_counter, window_stats, diagnostics
             )
 
-        if (
-            (machine_state == MachineState.IDLE and self.config.machine_state_gating.suppress_high_severity_on_idle)
-            or (
-                machine_state == MachineState.MAINTENANCE
-                and self.config.machine_state_gating.suppress_high_severity_on_maintenance
-            )
-        ):
-            has_anomaly = (
-                vision_confirmed_high
-                or sensor_confirmed
-                or vision_medium_exceeded
-                or raw_v >= tau_med
-                or raw_s >= tau_sensor
-            )
-            if has_anomaly:
-                self.total_state_suppressions += 1
+        # State gating suppression (active unless NO_STATE_GATING mode is selected)
+        if mode != PolicyMode.NO_STATE_GATING:
+            if (
+                (machine_state == MachineState.IDLE and self.config.machine_state_gating.suppress_high_severity_on_idle)
+                or (
+                    machine_state == MachineState.MAINTENANCE
+                    and self.config.machine_state_gating.suppress_high_severity_on_maintenance
+                )
+            ):
+                has_anomaly = (
+                    vision_confirmed_high
+                    or sensor_confirmed
+                    or vision_medium_exceeded
+                    or raw_v >= tau_med
+                    or raw_s >= tau_sensor
+                )
+                if has_anomaly:
+                    self.total_state_suppressions += 1
+                    return build_decision(
+                        RiskState.REVIEW_REQUIRED, TriggerReason.STATE_GATED_SUPPRESSION, is_system_degraded,
+                        self.vision_ema, self.sensor_ema, self.cooldown_counter, window_stats, diagnostics
+                    )
                 return build_decision(
-                    RiskState.REVIEW_REQUIRED, TriggerReason.STATE_GATED_SUPPRESSION, is_system_degraded,
+                    RiskState.NORMAL, TriggerReason.NOMINAL_OPERATION, is_system_degraded,
                     self.vision_ema, self.sensor_ema, self.cooldown_counter, window_stats, diagnostics
                 )
-            return build_decision(
-                RiskState.NORMAL, TriggerReason.NOMINAL_OPERATION, is_system_degraded,
-                self.vision_ema, self.sensor_ema, self.cooldown_counter, window_stats, diagnostics
-            )
 
-        # Step D: Cooldown Suppression (FULL_POLICY only)
-        if mode == PolicyMode.FULL_POLICY and self.cooldown_counter > 0:
+        # Step D: Cooldown Suppression
+        if has_cooldown and self.cooldown_counter > 0:
             self.total_cooldown_suppressions += 1
             has_anomaly = vision_confirmed_high or sensor_confirmed or vision_medium_exceeded
             risk = RiskState.REVIEW_REQUIRED if has_anomaly else RiskState.NORMAL
@@ -567,7 +572,7 @@ class TemporalPolicyEngine:
         # Step E: Multi-Modal Confirmation & Divergence Cascade
         if vision_confirmed_high and sensor_confirmed:
             self.total_escalations += 1
-            if mode == PolicyMode.FULL_POLICY:
+            if has_cooldown:
                 self.cooldown_counter = self.config.cooldown.cooldown_steps
             return build_decision(
                 RiskState.HIGH_SEVERITY, TriggerReason.MULTI_MODAL_CONFIRMED_FAULT, is_system_degraded,
@@ -576,7 +581,7 @@ class TemporalPolicyEngine:
 
         if vision_confirmed_high and not sensor_confirmed:
             self.total_escalations += 1
-            if mode == PolicyMode.FULL_POLICY:
+            if has_cooldown:
                 self.cooldown_counter = self.config.cooldown.cooldown_steps
             return build_decision(
                 RiskState.HIGH_SEVERITY, TriggerReason.SUSTAINED_VISION_ANOMALY, is_system_degraded,
@@ -589,11 +594,13 @@ class TemporalPolicyEngine:
                 self.vision_ema, self.sensor_ema, self.cooldown_counter, window_stats, diagnostics
             )
 
-        if delta_modal >= tau_div and (self.vision_ema >= tau_med or self.sensor_ema >= tau_sensor or raw_v >= tau_med):
-            return build_decision(
-                RiskState.REVIEW_REQUIRED, TriggerReason.CROSS_MODAL_DISCREPANCY, is_system_degraded,
-                self.vision_ema, self.sensor_ema, self.cooldown_counter, window_stats, diagnostics
-            )
+        # Cross-modal divergence check (active unless NO_DIVERGENCE mode is selected)
+        if mode != PolicyMode.NO_DIVERGENCE:
+            if delta_modal >= tau_div and (self.vision_ema >= tau_med or self.sensor_ema >= tau_sensor or raw_v >= tau_med):
+                return build_decision(
+                    RiskState.REVIEW_REQUIRED, TriggerReason.CROSS_MODAL_DISCREPANCY, is_system_degraded,
+                    self.vision_ema, self.sensor_ema, self.cooldown_counter, window_stats, diagnostics
+                )
 
         if vision_medium_exceeded:
             return build_decision(

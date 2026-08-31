@@ -224,6 +224,8 @@ def run_full_ablation_study(
         PolicyMode.EMA_KOFN,
         PolicyMode.NO_COOLDOWN,
         PolicyMode.NO_FUSION,
+        PolicyMode.NO_DIVERGENCE,
+        PolicyMode.NO_STATE_GATING,
         PolicyMode.FULL_POLICY,
     ]
 

@@ -256,3 +256,38 @@ def test_table_generation_functions(tmp_path: Path) -> None:
     md_tbl = generate_ablation_markdown_table(aggregated)
     assert "# Comprehensive Ablation Study Master Results Table" in md_tbl
     assert "| **transient_glitches** | `FULL_POLICY` |" in md_tbl
+
+
+def test_no_divergence_mode_ablation() -> None:
+    """Verify that NO_DIVERGENCE mode executes cascade but bypasses cross-modal divergence trigger."""
+    cfg = PolicyConfig(
+        policy_mode=PolicyMode.NO_DIVERGENCE,
+        confirmation_window=ConfirmationWindowConfig(window_size_n=5, consecutive_k=2),
+    )
+    engine = TemporalPolicyEngine(config=cfg)
+
+    # Moderate vision anomaly with nominal sensor
+    inf = create_dummy_inference_result(0.60)
+    sens = create_dummy_sensor_reading(0.05)
+
+    dec = engine.evaluate(inf, sens)
+    assert dec.trigger_reason != TriggerReason.CROSS_MODAL_DISCREPANCY
+
+
+def test_no_state_gating_mode_ablation() -> None:
+    """Verify that NO_STATE_GATING mode bypasses operational state suppression."""
+    cfg = PolicyConfig(
+        policy_mode=PolicyMode.NO_STATE_GATING,
+        confirmation_window=ConfirmationWindowConfig(window_size_n=5, consecutive_k=2),
+    )
+    engine = TemporalPolicyEngine(config=cfg)
+
+    inf = create_dummy_inference_result(0.90)
+    sens_idle = create_dummy_sensor_reading(0.10, machine_state=MachineState.IDLE)
+
+    # 2 consecutive high vision readings
+    engine.evaluate(inf, sens_idle)
+    dec2 = engine.evaluate(inf, sens_idle)
+
+    assert dec2.risk_state == RiskState.HIGH_SEVERITY
+    assert dec2.trigger_reason == TriggerReason.SUSTAINED_VISION_ANOMALY

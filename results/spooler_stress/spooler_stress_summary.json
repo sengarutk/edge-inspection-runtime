@@ -1,0 +1,139 @@
+{
+  "timestamp_utc": "2026-08-31T21:36:59Z",
+  "total_runs": 12,
+  "zero_loss_guaranteed_under_capacity": true,
+  "runs": [
+    {
+      "max_capacity_records": 1000,
+      "simulated_outage_seconds": 30,
+      "enqueued_records": 500,
+      "peak_queue_depth": 500,
+      "drained_records": 500,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 57450.25,
+      "drain_throughput_eps": 498257.11
+    },
+    {
+      "max_capacity_records": 1000,
+      "simulated_outage_seconds": 60,
+      "enqueued_records": 1000,
+      "peak_queue_depth": 1000,
+      "drained_records": 1000,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 52931.09,
+      "drain_throughput_eps": 735617.57
+    },
+    {
+      "max_capacity_records": 1000,
+      "simulated_outage_seconds": 120,
+      "enqueued_records": 2000,
+      "peak_queue_depth": 1000,
+      "drained_records": 1000,
+      "lost_records": 1000,
+      "loss_rate_pct": 50.0,
+      "enqueue_throughput_eps": 14045.89,
+      "drain_throughput_eps": 744204.33
+    },
+    {
+      "max_capacity_records": 5000,
+      "simulated_outage_seconds": 30,
+      "enqueued_records": 500,
+      "peak_queue_depth": 500,
+      "drained_records": 500,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 56424.02,
+      "drain_throughput_eps": 699014.23
+    },
+    {
+      "max_capacity_records": 5000,
+      "simulated_outage_seconds": 60,
+      "enqueued_records": 1000,
+      "peak_queue_depth": 1523,
+      "drained_records": 1523,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 46142.99,
+      "drain_throughput_eps": 386482.21
+    },
+    {
+      "max_capacity_records": 5000,
+      "simulated_outage_seconds": 120,
+      "enqueued_records": 2000,
+      "peak_queue_depth": 2000,
+      "drained_records": 2000,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 54087.99,
+      "drain_throughput_eps": 797186.24
+    },
+    {
+      "max_capacity_records": 10000,
+      "simulated_outage_seconds": 30,
+      "enqueued_records": 500,
+      "peak_queue_depth": 500,
+      "drained_records": 500,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 60818.75,
+      "drain_throughput_eps": 766432.72
+    },
+    {
+      "max_capacity_records": 10000,
+      "simulated_outage_seconds": 60,
+      "enqueued_records": 1000,
+      "peak_queue_depth": 1000,
+      "drained_records": 1000,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 54833.17,
+      "drain_throughput_eps": 791196.19
+    },
+    {
+      "max_capacity_records": 10000,
+      "simulated_outage_seconds": 120,
+      "enqueued_records": 2000,
+      "peak_queue_depth": 2000,
+      "drained_records": 2000,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 53265.46,
+      "drain_throughput_eps": 782121.02
+    },
+    {
+      "max_capacity_records": 50000,
+      "simulated_outage_seconds": 30,
+      "enqueued_records": 500,
+      "peak_queue_depth": 500,
+      "drained_records": 500,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 52272.76,
+      "drain_throughput_eps": 755547.22
+    },
+    {
+      "max_capacity_records": 50000,
+      "simulated_outage_seconds": 60,
+      "enqueued_records": 1000,
+      "peak_queue_depth": 1000,
+      "drained_records": 1000,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 59322.81,
+      "drain_throughput_eps": 821560.38
+    },
+    {
+      "max_capacity_records": 50000,
+      "simulated_outage_seconds": 120,
+      "enqueued_records": 2000,
+      "peak_queue_depth": 2000,
+      "drained_records": 2000,
+      "lost_records": 0,
+      "loss_rate_pct": 0.0,
+      "enqueue_throughput_eps": 55573.01,
+      "drain_throughput_eps": 834000.18
+    }
+  ]
+}
