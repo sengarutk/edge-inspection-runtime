@@ -4,7 +4,7 @@ title: "Industrial Edge Inspection Runtime: Multi-Modal Temporal Policy Gating a
 authors:
   - family-names: "Sengar"
     given-names: "Utkarsh"
-version: "0.2.0"
+version: "0.3.0"
 date-released: "2026-08-31"
 repository-code: "https://github.com/sengarutk/edge-inspection-runtime"
 license: "MIT"

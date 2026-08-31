@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "edge-inspection-runtime"
-version = "0.1.0"
+version = "0.3.0"
 description = "Industrial Edge Inspection Runtime and Reliability System"
 authors = [{ name = "Edge Reliability Team" }]
 readme = "README.md"
