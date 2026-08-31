@@ -131,16 +131,12 @@ def generate_synthetic_industrial_frame(
 ) -> np.ndarray:
     """Generate a realistic brushed-steel texture with subtle weld lines."""
     rng = np.random.RandomState(seed or 42)
-    # Base metallic luminance gradient
     x = np.linspace(110, 140, width)
     base = np.tile(x, (height, 1)).astype(np.float32)
-    # Directional brushed streaks
     streaks = rng.normal(0, 8, (height, 1)).repeat(width, axis=1)
-    # Fine surface grain
     grain = rng.normal(0, 4, (height, width))
     img = np.clip(base + streaks + grain, 0, 255).astype(np.uint8)
     img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-    # Subtle longitudinal weld guide seam
     cv2.line(img_bgr, (width // 2, 0), (width // 2, height), (95, 95, 105), 2)
     return img_bgr
 
@@ -162,7 +158,7 @@ def generate_defect_heatmap(
 # Interactive Demo Seeder & Chaos Simulation Helpers
 # =============================================================================
 def seed_demo_simulation(
-    n_steps: int = 100,
+    n_steps: int = 60,
     db: Optional[AuditLogDB] = None,
     evidence_mgr: Optional[EvidenceManager] = None,
 ) -> int:
@@ -181,12 +177,10 @@ def seed_demo_simulation(
         step_time = base_time + timedelta(milliseconds=step * 33.333)
         now_iso = step_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
-        # Determine step anomaly schedule
-        is_defect = (25 <= step <= 40) or (70 <= step <= 80)
-        is_sensor_fault = (50 <= step <= 65)
-        is_optical_fault = (step == 88)
+        is_defect = (20 <= step <= 25) or (42 <= step <= 45)
+        is_sensor_fault = (32 <= step <= 36)
+        is_optical_fault = (step == 52)
 
-        # 1. Optical processing with industrial metallic texture
         frame = generate_synthetic_industrial_frame(width=224, height=224, seed=42 + step)
         if is_optical_fault:
             frame = cv2.GaussianBlur(frame, (31, 31), 0)
@@ -194,8 +188,7 @@ def seed_demo_simulation(
         inf_result = inf_engine.run_inference(frame, inject_anomaly=is_defect)
         inf_result.timestamp_utc = now_iso
 
-        # 2. Physical sensor simulation
-        dropouts = ["current_amps"] if (15 <= step <= 18) else []
+        dropouts = ["current_amps"] if (12 <= step <= 14) else []
         sensor_reading = sensor_sim.step(
             machine_state=MachineState.RUNNING,
             inject_fault=is_sensor_fault,
@@ -203,23 +196,19 @@ def seed_demo_simulation(
         )
         sensor_reading.timestamp_utc = now_iso
 
-        # 3. Evidence generation with 2D Gaussian heatmap overlay
         ev_uri = None
         if is_defect or is_optical_fault or is_sensor_fault:
             if is_defect:
-                # Place defect hotspot along weld seam
-                defect_center = (112 + int(np.sin(step) * 15), 60 + (step * 3) % 100)
+                defect_center = (112 + int(np.sin(step) * 15), 60 + (step * 4) % 100)
                 heatmap = generate_defect_heatmap(center=defect_center, radius=28)
             else:
                 heatmap = np.zeros((224, 224), dtype=np.float32)
 
             ev_uri = ev_mgr.save_evidence(frame, heatmap, f"sim_frame_{step:04d}")
 
-        # 4. Temporal Policy Evaluation
         decision = policy_engine.evaluate(inf_result, sensor_reading, evidence_uri=ev_uri)
         decision.timestamp_utc = now_iso
 
-        # 5. Database commits
         audit_db.insert_telemetry(sensor_reading, inf_result)
         audit_db.insert_risk_event(decision)
         events_generated += 1
@@ -294,7 +283,6 @@ def restore_system_nominal(db: AuditLogDB) -> None:
     db.insert_system_health("current_sensor", "HEALTHY", "Current Sensor Nominal")
     db.insert_system_health("mqtt_broker", "CONNECTED", "Broker Connection Established (localhost:1883)")
 
-    # Purge any queued spooler items on nominal reconnect
     try:
         spooler = DiskSpooler()
         with spooler._lock:
@@ -310,18 +298,28 @@ def compute_dynamic_fmea(
     recent_events: List[Dict[str, Any]],
     recent_telemetry: List[Dict[str, Any]],
 ) -> List[Dict[str, str]]:
-    """Derive real-time dynamic FMEA subsystem health rows based on recent telemetry and events."""
+    """Derive real-time dynamic FMEA subsystem health rows based on latest health status."""
     try:
-        recent_health = audit_db.query_recent_health(limit=20)
+        recent_health = audit_db.query_recent_health(limit=50)
     except Exception:
         recent_health = []
-    health_by_comp = {h["component"]: h for h in recent_health}
 
-    # 1. Camera Optics
-    has_optical_degradation = any(
-        e.get("is_degraded") or e.get("trigger_reason") == "OPTICAL_DEGRADATION_FALLBACK"
-        for e in recent_events[:10]
-    ) or health_by_comp.get("camera_optics", {}).get("status") == "DEGRADED"
+    health_by_comp: Dict[str, Dict[str, Any]] = {}
+    for h in recent_health:
+        comp = h.get("component")
+        if comp and comp not in health_by_comp:
+            health_by_comp[comp] = h
+
+    cam_health = health_by_comp.get("camera_optics", {})
+    if cam_health.get("status") == "HEALTHY":
+        has_optical_degradation = False
+    elif cam_health.get("status") == "DEGRADED":
+        has_optical_degradation = True
+    else:
+        has_optical_degradation = any(
+            e.get("is_degraded") or e.get("trigger_reason") == "OPTICAL_DEGRADATION_FALLBACK"
+            for e in recent_events[:10]
+        )
 
     camera_row = {
         "Subsystem": "Camera Optics (Line 1 Overhead)",
@@ -330,43 +328,66 @@ def compute_dynamic_fmea(
         "Action / Fallback": "Fallback to Sensor Telemetry" if has_optical_degradation else "Nominal",
     }
 
-    # 2. PatchCore Model
+    model_health = health_by_comp.get("patchcore_model", {})
     avg_latency = 8.0
     if recent_telemetry:
         latencies = [t.get("latency_ms", 8.0) for t in recent_telemetry[:20] if t.get("latency_ms")]
         if latencies:
             avg_latency = float(np.mean(latencies))
 
+    if model_health.get("status") == "HEALTHY":
+        model_status = "HEALTHY"
+        model_action = "Nominal"
+    elif model_health.get("status") == "DEGRADED" or avg_latency > 25.0:
+        model_status = "WARNING (High Latency)"
+        model_action = "Throttle Frame Rate"
+    else:
+        model_status = "HEALTHY"
+        model_action = "Nominal"
+
     model_row = {
         "Subsystem": "PatchCore Vision Inference Model",
-        "Health Status": "WARNING (High Latency)" if avg_latency > 25.0 else "HEALTHY",
+        "Health Status": model_status,
         "Degradation Mode": f"Mean Latency: {avg_latency:.1f}ms",
-        "Action / Fallback": "Throttle Frame Rate" if avg_latency > 25.0 else "Nominal",
+        "Action / Fallback": model_action,
     }
 
-    # 3. Physical Sensors
-    has_dropout = any(
-        t.get("vibration_rms", 0.0) == 0.0 or t.get("current_amps", 0.0) == 0.0
-        for t in recent_telemetry[:10]
-    ) or health_by_comp.get("current_sensor", {}).get("status") == "DEGRADED"
+    sensor_health = health_by_comp.get("physical_sensors", {})
+    current_health = health_by_comp.get("current_sensor", {})
 
-    has_sensor_spike = any(
-        t.get("sensor_score", 0.0) > 0.65 or t.get("temperature_c", 0.0) > 85.0
-        for t in recent_telemetry[:10]
-    ) or health_by_comp.get("physical_sensors", {}).get("status") == "WARNING"
-
-    if has_dropout:
+    if sensor_health.get("status") == "HEALTHY" and current_health.get("status") == "HEALTHY":
+        sensor_status = "HEALTHY"
+        sensor_mode = "Continuous Sampling @ 30Hz"
+        sensor_action = "Nominal"
+    elif current_health.get("status") == "DEGRADED":
         sensor_status = "DEGRADED (Imputed ZOH)"
         sensor_mode = "Channel Dropout / Signal Detached"
         sensor_action = "Zero-Order Hold (ZOH) Fallback"
-    elif has_sensor_spike:
+    elif sensor_health.get("status") == "WARNING":
         sensor_status = "WARNING (Elevated Load/Heat)"
         sensor_mode = "Excess Z-Score > 3.0"
         sensor_action = "Cross-Modal Anomaly Verification"
     else:
-        sensor_status = "HEALTHY"
-        sensor_mode = "Continuous Sampling @ 30Hz"
-        sensor_action = "Nominal"
+        has_dropout = any(
+            t.get("vibration_rms", 0.0) == 0.0 or t.get("current_amps", 0.0) == 0.0
+            for t in recent_telemetry[:10]
+        )
+        has_sensor_spike = any(
+            t.get("sensor_score", 0.0) > 0.65 or t.get("temperature_c", 0.0) > 85.0
+            for t in recent_telemetry[:10]
+        )
+        if has_dropout:
+            sensor_status = "DEGRADED (Imputed ZOH)"
+            sensor_mode = "Channel Dropout / Signal Detached"
+            sensor_action = "Zero-Order Hold (ZOH) Fallback"
+        elif has_sensor_spike:
+            sensor_status = "WARNING (Elevated Load/Heat)"
+            sensor_mode = "Excess Z-Score > 3.0"
+            sensor_action = "Cross-Modal Anomaly Verification"
+        else:
+            sensor_status = "HEALTHY"
+            sensor_mode = "Continuous Sampling @ 30Hz"
+            sensor_action = "Nominal"
 
     sensor_row = {
         "Subsystem": "3-Axis Vibration & Thermal Sensors",
@@ -375,8 +396,14 @@ def compute_dynamic_fmea(
         "Action / Fallback": sensor_action,
     }
 
-    # 4. MQTT Broker
-    is_broker_offline = health_by_comp.get("mqtt_broker", {}).get("status") == "OFFLINE"
+    mqtt_health = health_by_comp.get("mqtt_broker", {})
+    if mqtt_health.get("status") in ("CONNECTED", "HEALTHY"):
+        is_broker_offline = False
+    elif mqtt_health.get("status") == "OFFLINE":
+        is_broker_offline = True
+    else:
+        is_broker_offline = False
+
     mqtt_row = {
         "Subsystem": "Mosquitto MQTT Broker (localhost:1883)",
         "Health Status": "DISCONNECTED (Offline)" if is_broker_offline else "CONNECTED",
@@ -384,7 +411,6 @@ def compute_dynamic_fmea(
         "Action / Fallback": "Disk Spooler Active" if is_broker_offline else "Nominal",
     }
 
-    # 5. Disk Spooler
     spooler = DiskSpooler()
     queue_depth = spooler.get_queue_depth()
     spooler.close()
@@ -407,16 +433,12 @@ def main() -> None:
     audit_db = get_database()
     evidence_mgr = get_evidence_mgr()
 
-    # Query operational data
     recent_events = audit_db.query_recent_events(limit=50)
     recent_telemetry = audit_db.query_recent_telemetry(limit=60)
     operator_metrics = audit_db.get_operator_metrics()
 
     sys_status, status_class = get_system_status(recent_events)
 
-    # -------------------------------------------------------------------------
-    # Header Section
-    # -------------------------------------------------------------------------
     h_col1, h_col2 = st.columns([3, 1])
     with h_col1:
         st.title("Industrial Edge Inspection Runtime")
@@ -429,17 +451,14 @@ def main() -> None:
             unsafe_allow_html=True,
         )
 
-    # -------------------------------------------------------------------------
-    # Sidebar Controls & Seed Engine
-    # -------------------------------------------------------------------------
     st.sidebar.image("https://img.icons8.com/fluency/96/shield.png", width=64)
     st.sidebar.title("Runtime Controls")
     st.sidebar.markdown("---")
 
     st.sidebar.subheader("Live Simulation Engine")
-    if st.sidebar.button("⚡ Run 100-Cycle Live Simulation", use_container_width=True):
-        with st.spinner("Executing 100-cycle edge inspection simulation..."):
-            count = seed_demo_simulation(100, audit_db, evidence_mgr)
+    if st.sidebar.button("⚡ Run 60-Cycle Live Simulation", use_container_width=True):
+        with st.spinner("Executing 60-cycle edge inspection simulation..."):
+            count = seed_demo_simulation(60, audit_db, evidence_mgr)
         st.sidebar.success(f"Generated {count} telemetry cycles & events!")
         st.rerun()
 
@@ -458,8 +477,10 @@ def main() -> None:
                 except Exception:
                     pass
 
+        restore_system_nominal(audit_db)
+
         with st.spinner("Database wiped. Re-seeding pristine telemetry..."):
-            seed_demo_simulation(100, audit_db, evidence_mgr)
+            seed_demo_simulation(60, audit_db, evidence_mgr)
         st.sidebar.success("Database wiped and re-seeded with pristine telemetry!")
         st.rerun()
 
@@ -472,18 +493,12 @@ def main() -> None:
         "**Storage:** SQLite WAL & Local Spooler"
     )
 
-    # -------------------------------------------------------------------------
-    # Main Tabs
-    # -------------------------------------------------------------------------
     tab1, tab2, tab3 = st.tabs([
         "📊 Live Telemetry & Risk Stream",
         "🔍 Operator Triage Queue",
         "💥 Chaos Engineering & FMEA Diagnostics",
     ])
 
-    # =========================================================================
-    # TAB 1: Live Telemetry & Risk Stream
-    # =========================================================================
     with tab1:
         col1, col2, col3, col4 = st.columns(4)
 
@@ -503,37 +518,25 @@ def main() -> None:
 
         st.markdown("---")
 
-        # Time Series Charts & Empty State Handling
         if recent_telemetry:
-            # Chronological dataframe for charts
             df_telem = pd.DataFrame(recent_telemetry).iloc[::-1].reset_index(drop=True)
-            total_pts = len(df_telem)
-            df_telem["Cycle"] = [f"Step {i+1}" for i in range(total_pts)]
+            df_telem["Cycle"] = df_telem.index + 1
 
-            # Strip 1: Inspection Risk Trajectory & Anomaly Scores
             st.subheader("1. Inspection Risk Trajectory & Anomaly Scores")
-            risk_strip = df_telem.set_index("Cycle")[["vision_score", "sensor_score"]]
-            st.line_chart(risk_strip)
+            st.line_chart(df_telem.set_index("Cycle")[["vision_score", "sensor_score"]])
 
-            # Strip 2: Thermal Dynamics Strip (°C)
             st.subheader("2. Thermal Dynamics Strip (°C)")
-            thermal_strip = df_telem.set_index("Cycle")[["temperature_c"]]
-            st.line_chart(thermal_strip)
+            st.line_chart(df_telem.set_index("Cycle")[["temperature_c"]])
 
-            # Strip 3: Motor Current Draw (Amperes)
             st.subheader("3. Motor Current Draw (Amperes)")
-            current_strip = df_telem.set_index("Cycle")[["current_amps"]]
-            st.line_chart(current_strip)
+            st.line_chart(df_telem.set_index("Cycle")[["current_amps"]])
 
-            # Strip 4: 3-Axis Mechanical Vibration (g RMS)
             st.subheader("4. 3-Axis Mechanical Vibration (g RMS)")
-            vib_strip = df_telem.set_index("Cycle")[["vibration_rms"]]
-            st.line_chart(vib_strip)
+            st.line_chart(df_telem.set_index("Cycle")[["vibration_rms"]])
 
             st.markdown("---")
             st.subheader("Recent Ingestion Stream (Newest First)")
 
-            # Reverse for newest-first table display
             display_df = df_telem.iloc[::-1].head(15)[
                 [
                     "timestamp_utc",
@@ -545,7 +548,6 @@ def main() -> None:
                 ]
             ].copy()
 
-            # Format float numbers cleanly
             for col in ["vision_score", "sensor_score", "vibration_rms", "temperature_c", "current_amps"]:
                 display_df[col] = display_df[col].map(lambda x: f"{x:.3f}" if pd.notnull(x) else "0.000")
 
@@ -558,14 +560,16 @@ def main() -> None:
             )
             if st.button("🚀 Seed Demo Telemetry Data", use_container_width=True):
                 with st.spinner("Seeding initial live telemetry stream..."):
-                    seed_demo_simulation(100, audit_db, evidence_mgr)
+                    seed_demo_simulation(60, audit_db, evidence_mgr)
                 st.rerun()
 
-    # =========================================================================
-    # TAB 2: Human-in-the-Loop Triage Review Queue
-    # =========================================================================
     with tab2:
         st.subheader("Actionable Incident Triage Queue")
+
+        actionable_events = [
+            e for e in recent_events
+            if e.get("risk_state") in ("HIGH_SEVERITY", "REVIEW_REQUIRED")
+        ]
 
         f_col1, f_col2 = st.columns([1, 1])
         with f_col1:
@@ -577,7 +581,7 @@ def main() -> None:
                 "Risk Level Filter", ["ALL", "HIGH_SEVERITY", "REVIEW_REQUIRED"], index=0
             )
 
-        filtered_events = recent_events
+        filtered_events = actionable_events
         if status_filter != "ALL":
             filtered_events = [e for e in filtered_events if e.get("review_status") == status_filter]
         if risk_filter != "ALL":
@@ -589,7 +593,7 @@ def main() -> None:
                 for e in filtered_events
             ]
             selected_idx = st.selectbox(
-                "Select Incident for Review",
+                "Select Actionable Incident for Review",
                 range(len(event_options)),
                 format_func=lambda i: event_options[i],
             )
@@ -659,11 +663,8 @@ def main() -> None:
                         st.toast("Alert flagged as FALSE POSITIVE.", icon="❌")
                         st.rerun()
         else:
-            st.info("No incidents found matching the selected filters.")
+            st.info("No actionable incidents (HIGH_SEVERITY or REVIEW_REQUIRED) match the active filters.")
 
-    # =========================================================================
-    # TAB 3: Chaos Engineering & Dynamic FMEA Diagnostics
-    # =========================================================================
     with tab3:
         st.subheader("Interactive Chaos Engineering & Fault Simulation")
 

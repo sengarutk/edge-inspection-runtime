@@ -146,6 +146,8 @@ class AuditLogDB:
         evidence_uri = data.get("evidence_uri")
         raw_payload = json.dumps(data)
 
+        initial_review_status = str(data.get("review_status") or ("NOMINAL" if risk_state == "NORMAL" else "PENDING"))
+
         with self._lock, self._conn:
             self._conn.execute(
                 """
@@ -155,13 +157,13 @@ class AuditLogDB:
                     cooldown_remaining, is_degraded, frame_id, reading_id, evidence_uri,
                     raw_payload, review_status, operator_notes, reviewed_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', NULL, NULL);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL);
                 """,
                 (
                     event_id, timestamp_utc, camera_id, machine_id, machine_state,
                     risk_state, trigger_reason, vision_raw, vision_ema, sensor_raw, sensor_ema,
                     cooldown_remaining, is_degraded, frame_id, reading_id, evidence_uri,
-                    raw_payload,
+                    raw_payload, initial_review_status,
                 ),
             )
         return event_id
