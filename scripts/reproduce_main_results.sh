@@ -44,6 +44,7 @@ python3 -c "from src.trace_replay import generate_sample_physical_trace; generat
 
 # 6. Publication Tables & Vector Figures Generation
 echo "[STEP 6/7] Generating camera-ready publication figures (PDF & PNG) and LaTeX tables..."
+python3 scripts/build_paper_assets.py
 python3 scripts/generate_publication_figures.py
 
 # 7. Checksum Manifest Verification

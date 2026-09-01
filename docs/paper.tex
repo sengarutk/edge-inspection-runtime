@@ -11,6 +11,7 @@
 \usepackage{multirow}
 \usepackage{hyperref}
 \usepackage{microtype}
+\input{generated_metrics.tex}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -28,7 +29,7 @@ Industrial IoT Systems Division\\
 \maketitle
 
 \begin{abstract}
-Visual anomaly detection models deployed on industrial edge devices suffer from transient false alarms, high operator cognitive burden, and data loss during intermittent network partitions. We present an industrial edge inspection runtime architecture combining patch-level visual embeddings, synchronized 3-axis physical telemetry, and temporal finite-state policy gating. Our multi-modal policy framework executes an optical clarity check, moving-average smoothing, $k$-of-$N$ sliding window confirmation, operational state suppression, and an incident refractory cooldown finite state machine. To guarantee fault tolerance, a local Write-Ahead Log disk spooler acts as a non-volatile buffer during upstream broker disconnections. We evaluate our system across 8 ablation policy modes and 6 standardized industrial workload scenarios with multi-seed Monte Carlo simulations, multi-level percentile bootstrap confidence intervals, and step-down Holm-Bonferroni hypothesis tests. Results show 100.0\% false alarm suppression in transient glitch workloads, 93.3\% suppression with 3.0-frame median delay in sustained defects, zero observed event loss under tested partition scenarios with capped 50,000-record spool capacity, and a 10.7\,ms mean end-to-end pipeline latency with 0.0\% deadline miss rate against a 30\,FPS (33.333\,ms) SLA.
+Visual anomaly detection models deployed on industrial edge devices suffer from transient false alarms, high operator cognitive burden, and data loss during intermittent network partitions. We present an industrial edge inspection runtime architecture combining patch-level visual embeddings, synchronized 3-axis physical telemetry, and temporal finite-state policy gating. Our multi-modal policy framework executes an optical clarity check, moving-average smoothing, $k$-of-$N$ sliding window confirmation, operational state suppression, and an incident refractory cooldown finite state machine. To guarantee fault tolerance, a local Write-Ahead Log disk spooler acts as a non-volatile buffer during upstream broker disconnections. We evaluate our system across \TotalPolicyModes{} ablation policy modes and \TotalWorkloadScenarios{} standardized industrial workload scenarios with multi-seed Monte Carlo simulations, multi-level percentile bootstrap confidence intervals, and step-down Holm-Bonferroni hypothesis tests. Results show 100.0\% false alarm suppression in transient glitch workloads, 93.3\% suppression with 3.0-frame median delay in sustained defects, zero observed event loss under tested partition scenarios with capped 50,000-record spool capacity, and a 10.7\,ms mean end-to-end pipeline latency with 0.0\% deadline miss rate against a 30\,FPS (33.333\,ms) SLA.
 \end{abstract}
 
 \begin{IEEEkeywords}

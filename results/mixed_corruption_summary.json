@@ -5,7 +5,7 @@
     "blur_kernel": 7,
     "jpeg_quality": 30
   },
-  "aggregate_suppression_ratio": -179999999.0,
+  "aggregate_suppression_ratio": 0.0,
   "scenarios": {
     "nominal": {
       "BASELINE": {
@@ -15,8 +15,8 @@
         "total_escalations": 0,
         "false_alarms_per_hour": 0.0,
         "true_positive_rate": 1.0,
-        "mean_latency_ms": 10.746,
-        "p95_latency_ms": 14.506,
+        "mean_latency_ms": 10.253,
+        "p95_latency_ms": 13.55,
         "deadline_miss_rate": 0.0
       },
       "FULL_POLICY": {
@@ -26,9 +26,9 @@
         "total_escalations": 32,
         "false_alarms_per_hour": 11520.0,
         "true_positive_rate": 1.0,
-        "mean_latency_ms": 10.679,
-        "p95_latency_ms": 14.461,
-        "deadline_miss_rate": 0.0033
+        "mean_latency_ms": 10.052,
+        "p95_latency_ms": 13.353,
+        "deadline_miss_rate": 0.0
       }
     },
     "transient_glitches": {
@@ -39,8 +39,8 @@
         "total_escalations": 0,
         "false_alarms_per_hour": 0.0,
         "true_positive_rate": 1.0,
-        "mean_latency_ms": 10.361,
-        "p95_latency_ms": 14.182,
+        "mean_latency_ms": 9.867,
+        "p95_latency_ms": 13.211,
         "deadline_miss_rate": 0.0
       },
       "FULL_POLICY": {
@@ -50,8 +50,8 @@
         "total_escalations": 37,
         "false_alarms_per_hour": 13320.0,
         "true_positive_rate": 1.0,
-        "mean_latency_ms": 10.126,
-        "p95_latency_ms": 13.546,
+        "mean_latency_ms": 9.902,
+        "p95_latency_ms": 13.221,
         "deadline_miss_rate": 0.0
       }
     },
@@ -63,8 +63,8 @@
         "total_escalations": 51,
         "false_alarms_per_hour": 0.0,
         "true_positive_rate": 0.85,
-        "mean_latency_ms": 10.396,
-        "p95_latency_ms": 13.696,
+        "mean_latency_ms": 10.133,
+        "p95_latency_ms": 13.519,
         "deadline_miss_rate": 0.0
       },
       "FULL_POLICY": {
@@ -74,8 +74,8 @@
         "total_escalations": 140,
         "false_alarms_per_hour": 29160.0,
         "true_positive_rate": 0.9833,
-        "mean_latency_ms": 10.374,
-        "p95_latency_ms": 13.586,
+        "mean_latency_ms": 10.154,
+        "p95_latency_ms": 13.479,
         "deadline_miss_rate": 0.0
       }
     }
