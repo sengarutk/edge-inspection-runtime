@@ -5,6 +5,7 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\graphicspath{{figures/}{docs/figures/}}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
@@ -29,7 +30,7 @@ Industrial IoT Systems Division\\
 \maketitle
 
 \begin{abstract}
-Visual anomaly detection models deployed on industrial edge devices suffer from transient false alarms, high operator cognitive burden, and data loss during intermittent network partitions. We present an industrial edge inspection runtime architecture combining patch-level visual embeddings, synchronized 3-axis physical telemetry, and temporal finite-state policy gating. Our multi-modal policy framework executes an optical clarity check, moving-average smoothing, $k$-of-$N$ sliding window confirmation, operational state suppression, and an incident refractory cooldown finite state machine. To guarantee fault tolerance, a local Write-Ahead Log disk spooler acts as a non-volatile buffer during upstream broker disconnections. We evaluate our system across \TotalPolicyModes{} ablation policy modes and \TotalWorkloadScenarios{} standardized industrial workload scenarios with multi-seed Monte Carlo simulations, multi-level percentile bootstrap confidence intervals, and step-down Holm-Bonferroni hypothesis tests. Results show 100.0\% false alarm suppression in transient glitch workloads, 93.3\% suppression with 3.0-frame median delay in sustained defects, zero observed event loss under tested partition scenarios with capped 50,000-record spool capacity, and a 10.7\,ms mean end-to-end pipeline latency with 0.0\% deadline miss rate against a 30\,FPS (33.333\,ms) SLA.
+Visual anomaly detection models deployed on industrial edge devices suffer from transient false alarms, high operator cognitive burden, and data loss during intermittent network partitions. We present an industrial edge inspection runtime architecture combining patch-level visual embeddings, synchronized 3-axis physical telemetry, and temporal finite-state policy gating. Our multi-modal policy framework executes an optical clarity check, moving-average smoothing, $k$-of-$N$ sliding window confirmation, operational state suppression, and an incident refractory cooldown finite state machine. To guarantee fault tolerance, a local Write-Ahead Log disk spooler acts as a non-volatile buffer during upstream broker disconnections. We evaluate our system across \TotalPolicyModes{} ablation policy modes and \TotalWorkloadScenarios{} standardized industrial workload scenarios with multi-seed Monte Carlo simulations, multi-level percentile bootstrap confidence intervals, and step-down Holm-Bonferroni hypothesis tests. Results show \GlitchSuppressionFull{} false alarm suppression in transient glitch workloads, \SustainedSuppressionFull{} suppression with \SustainedMedianDelay{}-frame delay in sustained defects, zero observed event loss under tested partition scenarios with capped \SpoolBufferCapacity{}-record spool capacity, and an end-to-end execution latency of \MeanPipelineLatency{} (\DeadlineMissRate{} deadline misses against a \TargetFPS{} / \TargetDeadlineMs{} budget).
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -37,7 +38,7 @@ Edge Computing, Visual Anomaly Detection, Multi-Modal Sensor Fusion, Temporal Ga
 \end{IEEEkeywords}
 
 \section{Introduction}
-Modern industrial manufacturing increasingly relies on computer vision models (e.g., PatchCore, PaDiM) executing at the edge for automated surface inspection \cite{roth2022patchcore}. However, when deployed on real-world factory lines operating at 30\,FPS, unmitigated raw anomaly thresholding produces severe false alarm rates triggered by transient optical reflections, airborne dust, and sensor electrical noise. This leads to alarm fatigue, where human operators are overwhelmed by false alarms and overlook genuine structural defects \cite{chen2021edge}.
+Modern industrial manufacturing increasingly relies on computer vision models (e.g., PatchCore, PaDiM) executing at the edge for automated surface inspection \cite{roth2022patchcore}. However, when deployed on real-world factory lines operating at \TargetFPS{}, unmitigated raw anomaly thresholding produces severe false alarm rates triggered by transient optical reflections, airborne dust, and sensor electrical noise. This leads to alarm fatigue, where human operators are overwhelmed by false alarms and overlook genuine structural defects \cite{chen2021edge}.
 
 Furthermore, edge nodes operating on factory shop floors frequently experience intermittent wireless and wired network partitions. Without reliable local edge buffering, critical quality inspection records and telemetry events are permanently lost during broker disconnects.
 
@@ -45,7 +46,7 @@ To address these challenges, we formalize the following core Research Questions:
 \begin{itemize}
     \item \textbf{RQ1 (Temporal Confirmation):} How effectively does sliding-window temporal confirmation filter isolated optical false positives without inducing excessive detection delays?
     \item \textbf{RQ2 (Operator Workload Mitigation):} What is the reduction in cognitive operator triage burden under correlated multi-modal sensor fusion and state-gated suppression?
-    \item \textbf{RQ3 (Resilience \& SLA Compliance):} Can edge persistence and Write-Ahead Log spooling guarantee zero event loss under intermittent network partitions while preserving real-time 30\,FPS deadline compliance?
+    \item \textbf{RQ3 (Resilience \& SLA Compliance):} Can edge persistence and Write-Ahead Log spooling guarantee zero event loss under intermittent network partitions while preserving real-time \TargetFPS{} deadline compliance?
 \end{itemize}
 
 \section{System Architecture \& Mathematical Formulation}
@@ -69,21 +70,31 @@ where $k=4, N=10$, and $\tau_{\text{high}} = 0.80$.
 When vision indicates an anomaly but physical sensors remain nominal, the cross-modal discrepancy $\Delta_{\text{modal}} = |\tilde{v}_t - \tilde{s}_t|$ is checked against $\tau_{\text{div}} = 0.45$. If $\Delta_{\text{modal}} \ge \tau_{\text{div}}$, the system downgrades the risk state to \texttt{REVIEW\_REQUIRED} rather than triggering a critical line lockout. If the machine operational state $M_t \in \{\text{IDLE}, \text{MAINTENANCE}\}$, high-severity alarms are suppressed to avoid false trips during commissioning.
 
 \subsection{Local Write-Ahead Log Spooler}
-When the upstream MQTT broker is partitioned, an SQLite-backed queue operates with Write-Ahead Logging (\texttt{WAL}) and a 50,000-record capacity ring buffer, draining in batched transactions upon network reconnection.
+When the upstream MQTT broker is partitioned, an SQLite-backed queue operates with Write-Ahead Logging (\texttt{WAL}) and a \SpoolBufferCapacity{}-record capacity ring buffer, draining in batched transactions upon network reconnection.
 
 \section{Experimental Methodology \& Statistical Rigor}
-We evaluate our runtime using a Monte Carlo framework across 6 standardized scenarios: (1)~\textit{Nominal}, (2)~\textit{Transient Glitches}, (3)~\textit{Sustained Defects}, (4)~\textit{Optical Degradation}, (5)~\textit{Sensor Drift/Dropout}, and (6)~\textit{Distribution Shift}. 
+We evaluate our runtime using a Monte Carlo framework across \TotalWorkloadScenarios{} standardized scenarios: (1)~\textit{Nominal}, (2)~\textit{Transient Glitches}, (3)~\textit{Sustained Defects}, (4)~\textit{Optical Degradation}, (5)~\textit{Sensor Drift/Dropout}, and (6)~\textit{Distribution Shift} \cite{bergmann2021mvtec}.
 
-To ensure rigorous inference:
-\begin{itemize}
-    \item We evaluate 8 ablation policy variants: \texttt{BASELINE}, \texttt{EMA\_ONLY}, \texttt{EMA\_KOFN}, \texttt{NO\_COOLDOWN}, \texttt{NO\_FUSION}, \texttt{NO\_DIVERGENCE}, \texttt{NO\_STATE\_GATING}, and \texttt{FULL\_POLICY}.
-    \item All confidence intervals report empirical 95\% bootstrap percentile intervals ($B=2000$ iterations, $\text{unit}=\text{run}$).
-    \item Multiplicity control across pairwise policy comparisons is enforced via step-down Holm-Bonferroni Family-Wise Error Rate (FWER) correction at $\alpha = 0.05$.
-\end{itemize}
+\subsection{Multi-Level Statistical Evaluation}
+Degenerate confidence intervals (e.g., $[100.0, 100.0]$) arise when the evaluated metric reaches deterministic saturation across resampled runs given the empirical score pool and fixed decision thresholds. Non-parametric bootstrap percentile estimation ($B=2000$ resamples, seed-level resampling unit = ``run'') is applied across all quantitative reliability and operational backlog dimensions \cite{shortle2018fundamentals}. Multiplicity control across pairwise policy comparisons is enforced via step-down Holm-Bonferroni Family-Wise Error Rate (FWER) correction at $\alpha = 0.05$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/pareto_tradeoff.pdf}
+\caption{Pareto trade-off between False Alarm Rate and Mean Detection Delay across policy modes (Mean $\pm$ 95\% Bootstrap CI).}
+\label{fig:pareto_tradeoff}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/queue_workload_analysis.pdf}
+\caption{Operator triage station utilization $\rho$ and mean waiting time $W_q$ under $M/M/1$ queueing analysis.}
+\label{fig:queue_workload}
+\end{figure}
 
 \begin{table*}[t]
 \centering
-\caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios (Mean $\pm$ 95\% Bootstrap CI, Multi-Seed Repetitions).}
+\caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios (Mean $\pm$ 95\% Bootstrap CI, $B=2000$ resamples, unit = ``run'').}
 \label{tab:ablation_results}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llccccc}
@@ -113,9 +124,35 @@ To ensure rigorous inference:
 \end{table*}
 
 \section{Results \& Discussion}
-As shown in Table~\ref{tab:ablation_results}, \texttt{FULL\_POLICY} achieves 100.0\% false alarm suppression on transient glitches and reduces false alarm rates by 93.3\% in sustained defects, maintaining operator workload well below the 60.0 reviews/hour cognitive limit. The detection delay is bounded at 3.0 frames (100.0\,ms), which is fully compatible with high-speed industrial lines.
+As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_tradeoff}, \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false alarm suppression on transient glitches and reduces false alarm rates by \SustainedSuppressionFull{} in sustained defects, maintaining operator workload well below the 60.0 reviews/hour cognitive limit. The detection delay is bounded at \SustainedMedianDelay{} frames ($<100.0\,\text{ms}$), which is fully compatible with high-speed industrial lines.
 
-During simulated network disconnects, zero event loss is observed within the 50,000-record capacity limit, with peak drain throughput exceeding 1,200 events/second upon reconnection. Mean execution latency is 10.7\,ms with a 0.0\% deadline miss rate against the 33.333\,ms SLA.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/decision_attribution_per_scenario.pdf}
+\caption{Granular decision reason attribution for \texttt{FULL\_POLICY} across standardized industrial scenarios.}
+\label{fig:decision_attribution}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Validation on Real-World Run-to-Failure Traces (NASA IMS Bearing \& C-MAPSS Turbofan)}
+\label{tab:real_trace_results}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Dataset Trace} & \textbf{Policy Mode} & \textbf{FA / Hour $\downarrow$} & \textbf{TPR $\uparrow$} & \textbf{Delay (s) $\downarrow$} \\
+\midrule
+\multirow{2}{*}{NASA IMS Bearing \cite{qiu2006wavelet}} & BASELINE & 180.0 & 100.0\% & 0.00\,s \\
+& FULL\_POLICY & \IMSFAFull & \IMSTPRFull & 0.10\,s \\
+\midrule
+\multirow{2}{*}{NASA C-MAPSS Turbofan \cite{saxena2008damage}} & BASELINE & 165.0 & 100.0\% & 0.00\,s \\
+& FULL\_POLICY & \CMAPSSFAFull & \CMAPSSTPRFull & 0.10\,s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:real_trace_results} demonstrates generalization to canonical physical degradation datasets. On the NASA IMS bearing and C-MAPSS turbofan traces, \texttt{FULL\_POLICY} captures 100.0\% of true run-to-failure faults with minimal delay ($0.10\,\text{s}$).
+
+During simulated network disconnects, zero event loss is observed within the \SpoolBufferCapacity{}-record capacity limit. Mean execution latency is \MeanPipelineLatency{} with a \DeadlineMissRate{} deadline miss rate against the \TargetDeadlineMs{} SLA.
 
 \section{Threats to Validity}
 We identify four key threats to experimental validity:
@@ -129,7 +166,6 @@ We identify four key threats to experimental validity:
 \section{Conclusion}
 The proposed runtime framework eliminates alarm fatigue and ensures edge data durability for real-time industrial inspection. All reproduction scripts, data manifests, and ablation suites are fully open-source.
 
-\bibliographystyle{IEEEtran}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
