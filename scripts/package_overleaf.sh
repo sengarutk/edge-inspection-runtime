@@ -17,6 +17,8 @@ echo "==========================================================================
 echo "[1/4] Regenerating metrics and publication vector figures..."
 if [ -d ".venv" ]; then
     export PATH="${REPO_ROOT}/.venv/bin:${PATH}"
+elif [ -d "${HOME}/edge-inspection-runtime/.venv" ]; then
+    export PATH="${HOME}/edge-inspection-runtime/.venv/bin:${PATH}"
 fi
 
 python3 scripts/build_paper_assets.py

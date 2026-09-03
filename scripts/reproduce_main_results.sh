@@ -19,6 +19,8 @@ echo "==========================================================================
 echo "[STEP 1/7] Validating Python environment and core packages..."
 if [ -d ".venv" ]; then
     export PATH="${REPO_ROOT}/.venv/bin:${PATH}"
+elif [ -d "${HOME}/edge-inspection-runtime/.venv" ]; then
+    export PATH="${HOME}/edge-inspection-runtime/.venv/bin:${PATH}"
 fi
 
 python3 -c "import numpy, scipy, matplotlib, pydantic, loguru, streamlit, cv2, pandas; print('  ✓ Core scientific & vision libraries available')"
