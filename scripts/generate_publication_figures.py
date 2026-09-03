@@ -134,7 +134,7 @@ def generate_queue_workload_plot(
     ax1.set_title("Triage Station Utilization")
     ax1.set_xlim(0, 65)
     ax1.set_ylim(0, 1.05)
-    ax1.legend(loc="upper left", fontsize=8)
+    ax1.legend(loc="upper left", fontsize=7.5, framealpha=0.9)
 
     # Subplot 2: Mean Wait Time (Minutes)
     ax2.plot(arrival_rates, mean_wait_times, color="#e67e22", linewidth=2.0, label=r"Wait Time $W_q$")
@@ -145,7 +145,7 @@ def generate_queue_workload_plot(
     ax2.set_title("Operator Queue Backlog Latency")
     ax2.set_xlim(0, 60)
     ax2.set_ylim(0, 15)
-    ax2.legend(loc="upper left", fontsize=8)
+    ax2.legend(loc="upper left", fontsize=7.5, framealpha=0.9)
 
     plt.tight_layout()
     out_png = fig_path / "queue_workload_analysis.png"
@@ -205,7 +205,13 @@ def generate_per_scenario_decision_attribution_plot(
     ax.set_xticklabels(scenarios, rotation=20, ha="right", fontsize=9)
     ax.set_ylabel("Attribution Fraction")
     ax.set_title("Decision Attribution for FULL_POLICY Across Workloads")
-    ax.legend(loc="upper right", framealpha=0.9, fontsize=8)
+    ax.legend(
+        loc="lower left",
+        bbox_to_anchor=(0.02, 0.05),
+        framealpha=0.92,
+        fontsize=7.5,
+        ncol=2,
+    )
     plt.tight_layout()
 
     out_png = fig_path / "decision_attribution_per_scenario.png"
@@ -253,14 +259,14 @@ def generate_queue_variability_plot(
     ax1.set_xlabel(r"Arrival Rate $\lambda$ (Escalations / Hr)")
     ax1.set_ylabel("Expected Queue Backlog $L_q$")
     ax1.set_title("Backlog vs. Service Variance")
-    ax1.legend(loc="upper left", fontsize=8)
+    ax1.legend(loc="upper left", fontsize=7.5, framealpha=0.9)
 
     # Subplot 2: Mean Wait Time W_q
     ax2.set_xlabel(r"Arrival Rate $\lambda$ (Escalations / Hr)")
     ax2.set_ylabel("Mean Wait Time $W_q$ (Min)")
     ax2.set_title("Wait Time vs. Service Variance")
     ax2.axhline(1.0, color="#7f8c8d", linestyle=":", label="1-min SLA Bound")
-    ax2.legend(loc="upper left", fontsize=8)
+    ax2.legend(loc="upper left", fontsize=7.5, framealpha=0.9)
 
     plt.tight_layout()
     out_png = fig_path / "queue_variability_analysis.png"
@@ -338,7 +344,13 @@ def generate_all_publication_figures(
     ax.set_yscale("symlog", linthresh=1.0)
     ax.set_ylim(-0.5, 300.0)
     ax.set_title("Reliability Pareto Frontier: Alarm Rate vs. Detection Delay")
-    ax.legend(loc="upper right", framealpha=0.9, fontsize=8)
+    ax.legend(
+        loc="lower left",
+        bbox_to_anchor=(0.02, 0.05),
+        framealpha=0.92,
+        fontsize=7.5,
+        ncol=2,
+    )
     plt.tight_layout()
 
     out_png1 = fig_path / "pareto_tradeoff.png"

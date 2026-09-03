@@ -12,6 +12,7 @@
 \usepackage{multirow}
 \usepackage{hyperref}
 \usepackage{microtype}
+\usepackage{balance}
 \input{generated_metrics.tex}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
@@ -62,7 +63,7 @@ where $\alpha_v = 0.35$ and $\alpha_s = 0.40$.
 
 A $k$-of-$N$ sliding window confirmation accumulator monitors threshold exceedances:
 \begin{equation}
-C_{v, t} = \sum_{i=0}^{N-1} \mathbb{I}(\tilde{v}_{t-i} \ge \tau_{\text{high}}), \quad \text{Confirmed} \iff C_{v, t} \ge k
+C_{v, t} = \sum_{i=0}^{N-1} \mathbb{I}(\tilde{v}_{t-i} \ge \tau_{\text{high}}), \quad E_{\text{conf}, t} = \mathbb{I}(C_{v, t} \ge k)
 \end{equation}
 where $k=4, N=10$, and $\tau_{\text{high}} = 0.80$.
 
@@ -126,7 +127,7 @@ Degenerate confidence intervals (e.g., $[100.0, 100.0]$) arise when the evaluate
 \section{Results \& Discussion}
 As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_tradeoff}, \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false alarm suppression on transient glitches and reduces false alarm rates by \SustainedSuppressionFull{} in sustained defects, maintaining operator workload well below the 60.0 reviews/hour cognitive limit. The detection delay is bounded at \SustainedMedianDelay{} frames ($100.0\,\text{ms}$ at 30\,FPS), which is fully compatible with high-speed industrial lines.
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.48\textwidth]{figures/decision_attribution_per_scenario.pdf}
 \caption{Granular decision reason attribution for \texttt{FULL\_POLICY} across standardized industrial scenarios.}
@@ -166,6 +167,7 @@ We identify four key threats to experimental validity:
 \section{Conclusion}
 The proposed runtime framework eliminates alarm fatigue and ensures edge data durability for real-time industrial inspection. All reproduction scripts, data manifests, and ablation suites are fully open-source.
 
+\balance
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
