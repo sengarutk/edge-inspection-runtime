@@ -94,7 +94,7 @@ Degenerate confidence intervals (e.g., $[100.0, 100.0]$) arise when the evaluate
 
 \begin{table*}[t]
 \centering
-\caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios (Mean $\pm$ 95\% Bootstrap CI, $B=2000$ resamples, unit = ``run'').}
+\caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios (Mean $\pm$ 95\% Bootstrap CI, $B=2000$ resamples, unit = ``run'')}
 \label{tab:ablation_results}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llccccc}
@@ -124,7 +124,7 @@ Degenerate confidence intervals (e.g., $[100.0, 100.0]$) arise when the evaluate
 \end{table*}
 
 \section{Results \& Discussion}
-As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_tradeoff}, \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false alarm suppression on transient glitches and reduces false alarm rates by \SustainedSuppressionFull{} in sustained defects, maintaining operator workload well below the 60.0 reviews/hour cognitive limit. The detection delay is bounded at \SustainedMedianDelay{} frames ($<100.0\,\text{ms}$), which is fully compatible with high-speed industrial lines.
+As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_tradeoff}, \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false alarm suppression on transient glitches and reduces false alarm rates by \SustainedSuppressionFull{} in sustained defects, maintaining operator workload well below the 60.0 reviews/hour cognitive limit. The detection delay is bounded at \SustainedMedianDelay{} frames ($100.0\,\text{ms}$ at 30\,FPS), which is fully compatible with high-speed industrial lines.
 
 \begin{figure}[t]
 \centering

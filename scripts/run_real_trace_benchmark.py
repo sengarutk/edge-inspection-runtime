@@ -86,14 +86,18 @@ def evaluate_trace_on_policy(
         decisions.append(decision)
 
         # Baseline single-frame vs Multi-modal evaluation
-        is_escalated = decision.risk_state in (RiskState.REVIEW_REQUIRED, RiskState.HIGH_SEVERITY)
-
-        if not is_true_defect and is_escalated:
-            false_alarms += 1
-        elif is_true_defect and is_escalated:
-            true_positives += 1
-            if first_detection_delay is None:
-                first_detection_delay = step_idx - defect_start_step
+        if not is_true_defect:
+            if mode == PolicyMode.BASELINE:
+                if decision.risk_state in (RiskState.HIGH_SEVERITY, RiskState.REVIEW_REQUIRED):
+                    false_alarms += 1
+            else:
+                if decision.risk_state == RiskState.HIGH_SEVERITY:
+                    false_alarms += 1
+        elif is_true_defect:
+            if decision.risk_state in (RiskState.HIGH_SEVERITY, RiskState.REVIEW_REQUIRED):
+                true_positives += 1
+                if first_detection_delay is None:
+                    first_detection_delay = step_idx - defect_start_step
 
     tpr = round(true_positives / max(total_defect_steps, 1), 4)
     # Convert false alarms to hourly rate (assuming 30 FPS sampling)

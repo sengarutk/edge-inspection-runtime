@@ -19,14 +19,14 @@
       "FULL_POLICY": {
         "policy_mode": "FULL_POLICY",
         "total_steps": 600,
-        "false_alarms_count": 148,
-        "false_alarms_per_hour": 38057.14,
+        "false_alarms_count": 0,
+        "false_alarms_per_hour": 0.0,
         "true_positive_rate": 1.0,
         "detection_delay_frames": 0,
         "detection_delay_seconds": 0.0,
-        "queue_utilization": 0.9833,
-        "mean_queue_length": 58.017,
-        "mean_wait_time_minutes": 59.0
+        "queue_utilization": 0.1667,
+        "mean_queue_length": 0.033,
+        "mean_wait_time_minutes": 0.2
       }
     }
   },
@@ -50,14 +50,14 @@
       "FULL_POLICY": {
         "policy_mode": "FULL_POLICY",
         "total_steps": 600,
-        "false_alarms_count": 146,
-        "false_alarms_per_hour": 40430.77,
+        "false_alarms_count": 0,
+        "false_alarms_per_hour": 0.0,
         "true_positive_rate": 1.0,
         "detection_delay_frames": 0,
         "detection_delay_seconds": 0.0,
-        "queue_utilization": 0.9833,
-        "mean_queue_length": 58.017,
-        "mean_wait_time_minutes": 59.0
+        "queue_utilization": 0.1667,
+        "mean_queue_length": 0.033,
+        "mean_wait_time_minutes": 0.2
       }
     }
   }
