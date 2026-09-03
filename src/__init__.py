@@ -62,7 +62,7 @@ from src.policy import (
 from src.sensor_simulator import MachineState, SensorReading, SensorSimulator
 from src.spooler import DiskSpooler
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 __all__ = [
     "__version__",
