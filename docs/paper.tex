@@ -59,7 +59,7 @@ We apply exponential moving average (EMA) smoothing:
 \begin{equation}
 \tilde{v}_t = \alpha_v v_t + (1 - \alpha_v) \tilde{v}_{t-1}, \quad \tilde{s}_t = \alpha_s s_t + (1 - \alpha_s) \tilde{s}_{t-1}
 \end{equation}
-where $\alpha_v = 0.35$ and $\alpha_s = 0.40$.
+where $\alpha_v = 0.35$ and $\alpha_s = 0.25$.
 
 A $k$-of-$N$ sliding window confirmation accumulator monitors threshold exceedances:
 \begin{equation}
@@ -79,23 +79,17 @@ We evaluate our runtime using a Monte Carlo framework across \TotalWorkloadScena
 \subsection{Multi-Level Statistical Evaluation}
 Degenerate confidence intervals (e.g., $[100.0, 100.0]$) arise when the evaluated metric reaches deterministic saturation across resampled runs given the empirical score pool and fixed decision thresholds. Non-parametric bootstrap percentile estimation ($B=2000$ resamples, seed-level resampling unit = ``run'') is applied across all quantitative reliability and operational backlog dimensions \cite{shortle2018fundamentals}. Multiplicity control across pairwise policy comparisons is enforced via step-down Holm-Bonferroni Family-Wise Error Rate (FWER) correction at $\alpha = 0.05$.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{figures/pareto_tradeoff.pdf}
-\caption{Pareto trade-off between False Alarm Rate and Mean Detection Delay across policy modes (Mean $\pm$ 95\% Bootstrap CI).}
-\label{fig:pareto_tradeoff}
-\end{figure}
-
-\begin{figure}[t]
-\centering
+\includegraphics[width=0.48\textwidth]{figures/pareto_tradeoff.pdf}\hfill
 \includegraphics[width=0.48\textwidth]{figures/queue_workload_analysis.pdf}
-\caption{Operator triage station utilization $\rho$ and mean waiting time $W_q$ under $M/M/1$ queueing analysis.}
-\label{fig:queue_workload}
-\end{figure}
+\caption{(a) Pareto trade-off between False Alarm Rate and Mean Detection Delay across 8 policy modes (Mean $\pm$ 95\% Bootstrap CI); (b) Operator triage station utilization $\rho$ and mean waiting time $W_q$ under $M/M/1$ queueing analysis.}
+\label{fig:pareto_and_queue}
+\end{figure*}
 
 \begin{table*}[t]
 \centering
-\caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios (Mean $\pm$ 95\% Bootstrap CI, $B=2000$ resamples, unit = ``run'')}
+\caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios (Mean $\pm$ 95\% Bootstrap CI, $B=2000$ resamples, unit = ``run'').}
 \label{tab:ablation_results}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llccccc}
@@ -119,13 +113,27 @@ Degenerate confidence intervals (e.g., $[100.0, 100.0]$) arise when the evaluate
 & NO\_DIVERGENCE & 15.0 [12.0, 18.0] & 91.7\% & 3.0 & 8.3\% & 8.8 \\
 & NO\_STATE\_GATING & 15.0 [12.0, 18.0] & 91.7\% & 3.0 & 8.3\% & 8.8 \\
 & FULL\_POLICY & 12.0 [10.0, 14.0] & 93.3\% & 3.0 & 5.0\% & 8.8 \\
+\midrule
+\multirow{2}{*}{Nominal} & BASELINE & 0.0 [0.0, 0.0] & 100.0\% & 0.0 & 0.0\% & 8.5 \\
+& FULL\_POLICY & 0.0 [0.0, 0.0] & 100.0\% & 0.0 & 0.0\% & 8.6 \\
+\midrule
+\multirow{2}{*}{Optical Degradation} & BASELINE & 120.0 [110.0, 130.0] & 0.0\% & 0.0 & 100.0\% & 8.5 \\
+& FULL\_POLICY & 0.0 [0.0, 0.0] & 100.0\% & 0.0 & 0.0\% & 8.6 \\
+\midrule
+\multirow{2}{*}{Sensor Drift/Dropout} & BASELINE & 150.0 [140.0, 160.0] & 0.0\% & 0.0 & 100.0\% & 8.6 \\
+& FULL\_POLICY & 0.0 [0.0, 0.0] & 100.0\% & 0.0 & 0.0\% & 8.7 \\
+\midrule
+\multirow{2}{*}{Distribution Shift} & BASELINE & 180.0 [170.0, 190.0] & 0.0\% & 0.0 & 100.0\% & 8.6 \\
+& FULL\_POLICY & 0.0 [0.0, 0.0] & 100.0\% & 0.0 & 0.0\% & 8.7 \\
 \bottomrule
 \end{tabular}%
 }
 \end{table*}
 
 \section{Results \& Discussion}
-As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_tradeoff}, \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false alarm suppression on transient glitches and reduces false alarm rates by \SustainedSuppressionFull{} in sustained defects, maintaining operator workload well below the 60.0 reviews/hour cognitive limit. The detection delay is bounded at \SustainedMedianDelay{} frames ($100.0\,\text{ms}$ at 30\,FPS), which is fully compatible with high-speed industrial lines.
+As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_and_queue}(a), \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false alarm suppression on transient glitches and reduces false alarm rates by \SustainedSuppressionFull{} in sustained defects, maintaining operator workload well below the 60.0 reviews/hour cognitive limit. The detection delay is bounded at \SustainedMedianDelay{} frames ($100.0\,\text{ms}$ at 30\,FPS).
+
+Queueing dynamics in Fig.~\ref{fig:pareto_and_queue}(b) demonstrate that \texttt{FULL\_POLICY} bounds operator utilization to $\rho = 0.20$ ($12.0\,\text{reviews/hr}$ arrival rate), maintaining an expected triage wait time of $W_q = 0.25\,\text{minutes}$ ($15.0\,\text{s}$). In contrast, unmitigated baseline alerts saturate the triage station ($\rho \ge 1.0$), triggering unbounded queue accumulation.
 
 \begin{figure}[htbp]
 \centering
@@ -133,6 +141,8 @@ As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_tradeoff},
 \caption{Granular decision reason attribution for \texttt{FULL\_POLICY} across standardized industrial scenarios.}
 \label{fig:decision_attribution}
 \end{figure}
+
+Fig.~\ref{fig:decision_attribution} illustrates the granular decision mechanism attribution across all six workloads. While sustained defects are predominantly confirmed through multi-modal sensor agreement ($60\%$), cosmetic material variations in the distribution shift scenario are cleanly routed to review via cross-modal divergence ($75\%$) without triggering line-stopping emergency alarms.
 
 \begin{table}[htbp]
 \centering
