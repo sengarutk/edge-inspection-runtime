@@ -10,7 +10,6 @@
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{multirow}
-\usepackage{hyperref}
 \usepackage{microtype}
 \usepackage{balance}
 \input{generated_metrics.tex}
@@ -68,7 +67,7 @@ C_{v, t} = \sum_{i=0}^{N-1} \mathbb{I}(\tilde{v}_{t-i} \ge \tau_{\mathrm{high}})
 where $k=4$, $N=10$, and $\tau_{\mathrm{high}} = 0.80$.
 
 \subsection{Cross-Modal Divergence \& State Gating}
-When vision indicates an anomaly but physical sensors remain nominal, the cross-modal discrepancy $\Delta_{\text{modal}} = |\tilde{v}_t - \tilde{s}_t|$ is checked against $\tau_{\text{div}} = 0.45$. If $\Delta_{\text{modal}} \ge \tau_{\text{div}}$, the system downgrades the risk state to \texttt{REVIEW\_REQUIRED} rather than triggering a critical line lockout. If the machine operational state $M_t \in \{\text{IDLE}, \text{MAINTENANCE}\}$, high-severity alarms are suppressed to avoid false trips during commissioning.
+When vision indicates an anomaly but physical sensors remain nominal, the cross-modal discrepancy $\Delta_{\text{modal}} = \vert{}\tilde{v}_t - \tilde{s}_t\vert{}$ is checked against $\tau_{\text{div}} = 0.45$. If $\Delta_{\text{modal}} \ge \tau_{\text{div}}$, the system downgrades the risk state to \texttt{REVIEW\_REQUIRED} rather than triggering a critical line lockout. If the machine operational state $M_t \in \{\text{IDLE}, \text{MAINTENANCE}\}$, high-severity alarms are suppressed to avoid false trips during commissioning.
 
 \subsection{Local Write-Ahead Log Spooler}
 When the upstream MQTT broker is partitioned, an SQLite-backed queue operates with Write-Ahead Logging (\texttt{WAL}) and a \SpoolBufferCapacity{}-record capacity ring buffer, draining in batched transactions upon network reconnection.
@@ -135,7 +134,7 @@ As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_and_queue}
 
 Queueing dynamics in Fig.~\ref{fig:pareto_and_queue}(b) demonstrate that \texttt{FULL\_POLICY} bounds operator utilization to $\rho = 0.20$ ($12.0\,\text{reviews/hr}$ arrival rate), maintaining an expected triage wait time of $W_q = 0.25\,\text{minutes}$ ($15.0\,\text{s}$). In contrast, unmitigated baseline alerts saturate the triage station ($\rho \ge 1.0$), triggering unbounded queue accumulation.
 
-\begin{figure}[!t]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/decision_attribution_per_scenario.pdf}
 \caption{Granular decision reason attribution for \texttt{FULL\_POLICY} across standardized industrial scenarios.}
@@ -144,10 +143,11 @@ Queueing dynamics in Fig.~\ref{fig:pareto_and_queue}(b) demonstrate that \texttt
 
 Fig.~\ref{fig:decision_attribution} illustrates the granular decision mechanism attribution across all six workloads. While sustained defects are predominantly confirmed through multi-modal sensor agreement ($60\%$), cosmetic material variations in the distribution shift scenario are cleanly routed to review via cross-modal divergence ($75\%$) without triggering line-stopping emergency alarms.
 
-\begin{table}[!t]
+\begin{table}[t]
 \centering
 \caption{Validation on Real-World Run-to-Failure Traces (NASA IMS Bearing \& C-MAPSS Turbofan)}
 \label{tab:real_trace_results}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccc}
 \toprule
 \textbf{Dataset Trace} & \textbf{Policy Mode} & \textbf{FA / Hour $\downarrow$} & \textbf{TPR $\uparrow$} & \textbf{Delay (s) $\downarrow$} \\
@@ -158,12 +158,15 @@ Fig.~\ref{fig:decision_attribution} illustrates the granular decision mechanism 
 \multirow{2}{*}{NASA C-MAPSS Turbofan \cite{saxena2008damage}} & BASELINE & 165.0 & 100.0\% & 0.00\,s \\
 & FULL\_POLICY & \CMAPSSFAFull & \CMAPSSTPRFull & 0.10\,s \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 Table~\ref{tab:real_trace_results} demonstrates generalization to canonical physical degradation datasets. On the NASA IMS bearing and C-MAPSS turbofan traces, \texttt{FULL\_POLICY} captures 100.0\% of true run-to-failure faults with minimal delay ($0.10\,\text{s}$).
 
 During simulated network disconnects, zero event loss is observed within the \SpoolBufferCapacity{}-record capacity limit. Mean execution latency is \MeanPipelineLatency{} with a \DeadlineMissRate{} deadline miss rate against the \TargetDeadlineMs{} SLA.
+
+\balance
 
 \section{Threats to Validity}
 We identify four key threats to experimental validity:
@@ -177,7 +180,6 @@ We identify four key threats to experimental validity:
 \section{Conclusion}
 The proposed runtime framework eliminates alarm fatigue and ensures edge data durability for real-time industrial inspection. All reproduction scripts, data manifests, and ablation suites are fully open-source.
 
-\balance
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
