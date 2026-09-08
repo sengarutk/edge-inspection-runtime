@@ -134,9 +134,9 @@ As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_and_queue}
 
 Queueing dynamics in Fig.~\ref{fig:pareto_and_queue}(b) demonstrate that \texttt{FULL\_POLICY} bounds operator utilization to $\rho = 0.20$ ($12.0\,\text{reviews/hr}$ arrival rate), maintaining an expected triage wait time of $W_q = 0.25\,\text{minutes}$ ($15.0\,\text{s}$). In contrast, unmitigated baseline alerts saturate the triage station ($\rho \ge 1.0$), triggering unbounded queue accumulation.
 
-\begin{figure}[!ht]
+\begin{figure}[t]
 \centering
-\includegraphics[width=0.92\columnwidth,height=2.0in,keepaspectratio]{figures/decision_attribution_per_scenario.pdf}
+\includegraphics[width=0.95\columnwidth,height=1.75in,keepaspectratio]{figures/decision_attribution_per_scenario.pdf}
 \caption{Granular decision reason attribution for \texttt{FULL\_POLICY} across standardized industrial scenarios.}
 \label{fig:decision_attribution}
 \end{figure}
