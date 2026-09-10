@@ -157,67 +157,122 @@ def generate_queue_workload_plot(
 
 
 def generate_per_scenario_decision_attribution_plot(
-    figures_dir: str = "docs/figures",
+    figures_dir: Any = "docs/figures",
+    output_path: Any = None,
 ) -> List[str]:
     """Generate camera-ready multi-panel per-scenario decision attribution breakdown."""
-    set_publication_style()
-    fig_path = Path(figures_dir)
-    fig_path.mkdir(parents=True, exist_ok=True)
+    if isinstance(figures_dir, dict):
+        fractions = figures_dir
+        out_pdf = Path(output_path)
+        out_png = Path(str(out_pdf).replace(".pdf", ".png"))
+    else:
+        fig_path = Path(figures_dir)
+        fig_path.mkdir(parents=True, exist_ok=True)
+        out_pdf = fig_path / "decision_attribution_per_scenario.pdf"
+        out_png = fig_path / "decision_attribution_per_scenario.png"
+        fractions = {
+            "Nominal": {
+                "Vision Confirmed": 0.05,
+                "Multi-Modal Fusion": 0.0,
+                "Cross-Modal Divergence": 0.0,
+                "Optical Degraded": 0.0,
+                "State Suppression": 0.95,
+            },
+            "Transient Glitches": {
+                "Vision Confirmed": 0.0,
+                "Multi-Modal Fusion": 0.0,
+                "Cross-Modal Divergence": 0.0,
+                "Optical Degraded": 0.85,
+                "State Suppression": 0.15,
+            },
+            "Sustained Defects": {
+                "Vision Confirmed": 0.35,
+                "Multi-Modal Fusion": 0.60,
+                "Cross-Modal Divergence": 0.05,
+                "Optical Degraded": 0.0,
+                "State Suppression": 0.0,
+            },
+            "Sensor Drift/Drop": {
+                "Vision Confirmed": 0.10,
+                "Multi-Modal Fusion": 0.30,
+                "Cross-Modal Divergence": 0.55,
+                "Optical Degraded": 0.05,
+                "State Suppression": 0.0,
+            },
+            "Network Partition": {
+                "Vision Confirmed": 0.40,
+                "Multi-Modal Fusion": 0.50,
+                "Cross-Modal Divergence": 0.0,
+                "Optical Degraded": 0.0,
+                "State Suppression": 0.10,
+            },
+            "Distribution Shift": {
+                "Vision Confirmed": 0.0,
+                "Multi-Modal Fusion": 0.0,
+                "Cross-Modal Divergence": 0.75,
+                "Optical Degraded": 0.0,
+                "State Suppression": 0.25,
+            },
+        }
 
-    scenarios = [
-        "Nominal",
-        "Transient Glitches",
-        "Sustained Defects",
-        "Sensor Drift/Drop",
-        "Network Partition",
-        "Distribution Shift",
-    ]
-
-    categories = [
+    scenarios = list(fractions.keys())
+    mechanisms = [
         "Vision Confirmed",
         "Multi-Modal Fusion",
         "Cross-Modal Divergence",
         "Optical Degraded",
         "State Suppression",
     ]
-    colors = ["#3498db", "#2ecc71", "#e67e22", "#9b59b6", "#95a5a6"]
 
-    # Attribution distributions for FULL_POLICY across the 6 standardized scenarios
-    scenario_attribution = {
-        "Nominal": [0.05, 0.0, 0.0, 0.0, 0.95],
-        "Transient Glitches": [0.0, 0.0, 0.0, 0.85, 0.15],
-        "Sustained Defects": [0.35, 0.60, 0.05, 0.0, 0.0],
-        "Sensor Drift/Drop": [0.10, 0.30, 0.55, 0.05, 0.0],
-        "Network Partition": [0.40, 0.50, 0.0, 0.0, 0.10],
-        "Distribution Shift": [0.0, 0.0, 0.75, 0.0, 0.25],
+    fig, ax = plt.subplots(figsize=(6.4, 2.4))
+    bottom = [0.0] * len(scenarios)
+
+    colors = {
+        "Vision Confirmed": "#4C78A8",
+        "Multi-Modal Fusion": "#59A14F",
+        "Cross-Modal Divergence": "#F28E2B",
+        "Optical Degraded": "#B279A2",
+        "State Suppression": "#9D9D9D",
     }
 
-    fig, ax = plt.subplots(figsize=(8.5, 3.6))
-    x_idx = np.arange(len(scenarios))
-    bottoms = np.zeros(len(scenarios))
+    for mechanism in mechanisms:
+        values = [fractions[s].get(mechanism, 0.0) for s in scenarios]
+        ax.bar(
+            scenarios,
+            values,
+            bottom=bottom,
+            label=mechanism,
+            color=colors[mechanism],
+            edgecolor="white",
+            linewidth=0.35,
+        )
+        bottom = [b + v for b, v in zip(bottom, values)]
 
-    for c_idx, cat in enumerate(categories):
-        vals = [scenario_attribution[s][c_idx] for s in scenarios]
-        ax.bar(x_idx, vals, bottom=bottoms, label=cat, color=colors[c_idx], width=0.55, edgecolor="white")
-        bottoms += np.array(vals)
+    ax.set_ylim(0.0, 1.0)
+    ax.set_ylabel("Attribution fraction", fontsize=9)
+    ax.set_xlabel("")
+    ax.tick_params(axis="x", labelrotation=25, labelsize=8)
+    ax.tick_params(axis="y", labelsize=8)
 
-    ax.set_xticks(x_idx)
-    ax.set_xticklabels(scenarios, rotation=20, ha="right", fontsize=9)
-    ax.set_ylabel("Attribution Fraction")
-    ax.set_title("Decision Attribution for FULL_POLICY Across Workloads")
+    ax.grid(axis="y", linestyle=":", linewidth=0.55, alpha=0.55)
+
     ax.legend(
-        loc="lower left",
-        bbox_to_anchor=(0.02, 0.05),
-        framealpha=0.92,
-        fontsize=7.5,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.34),
         ncol=2,
+        frameon=False,
+        fontsize=7.5,
     )
-    plt.tight_layout()
 
-    out_png = fig_path / "decision_attribution_per_scenario.png"
-    out_pdf = fig_path / "decision_attribution_per_scenario.pdf"
-    fig.savefig(out_png)
-    fig.savefig(out_pdf)
+    fig.subplots_adjust(
+        left=0.10,
+        right=0.98,
+        top=0.98,
+        bottom=0.38,
+    )
+
+    fig.savefig(out_pdf, format="pdf", bbox_inches="tight", pad_inches=0.02)
+    fig.savefig(str(out_png), format="png", dpi=300, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     return [str(out_png), str(out_pdf)]
 
