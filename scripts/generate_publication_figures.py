@@ -258,7 +258,7 @@ def generate_per_scenario_decision_attribution_plot(
 
     ax.legend(
         loc="upper center",
-        bbox_to_anchor=(0.5, -0.34),
+        bbox_to_anchor=(0.5, -0.26),
         ncol=2,
         frameon=False,
         fontsize=7.5,
@@ -267,8 +267,8 @@ def generate_per_scenario_decision_attribution_plot(
     fig.subplots_adjust(
         left=0.10,
         right=0.98,
-        top=0.98,
-        bottom=0.38,
+        top=0.95,
+        bottom=0.28,
     )
 
     fig.savefig(out_pdf, format="pdf", bbox_inches="tight", pad_inches=0.02)

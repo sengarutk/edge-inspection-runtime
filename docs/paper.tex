@@ -179,9 +179,9 @@ Pairwise policy comparisons use non-parametric paired tests with step-down Holm-
 \section{Results and Discussion}
 % ============================================================
 
-As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_queue}, \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false-alarm suppression on transient glitches and reduces false-alarm rates by \SustainedSuppressionFull{} in sustained defects. The resulting workload remains below the 60 reviews/hour cognitive threshold, while detection delay is bounded at \SustainedMedianDelay{} frames.
+As shown in Table~\ref{tab:ablation_results} and Fig.~\ref{fig:pareto_queue}(a), \texttt{FULL\_POLICY} achieves \GlitchSuppressionFull{} false-alarm suppression on transient glitches and reduces false-alarm rates by \SustainedSuppressionFull{} in sustained defects. The resulting workload remains below the 60 reviews/hour cognitive threshold, while detection delay is bounded at \SustainedMedianDelay{} frames.
 
-Queueing dynamics in Fig.~\ref{fig:pareto_queue} show that \texttt{FULL\_POLICY} bounds operator utilization to $\rho=0.20$ at an arrival rate of 12 reviews/hour, corresponding to an expected triage wait of $W_q=0.25$ minutes. In contrast, unmitigated baseline alerts saturate the triage station when $\rho\geq1$.
+Queueing dynamics in Fig.~\ref{fig:pareto_queue}(b) show that \texttt{FULL\_POLICY} bounds operator utilization to $\rho=0.20$ at an arrival rate of 12 reviews/hour, corresponding to an expected triage wait of $W_q=0.25$ minutes. In contrast, unmitigated baseline alerts saturate the triage station when $\rho\geq1$.
 
 % ============================================================
 % Single-Column Figure 2: declared in Section IV
@@ -205,15 +205,15 @@ Figure~\ref{fig:decision_attribution} shows how policy decisions are attributed 
     \resizebox{\columnwidth}{!}{%
     \begin{tabular}{llccc}
         \toprule
-        \textbf{Trace} & \textbf{Policy} & \textbf{FA/hr} & \textbf{TPR} & \textbf{Delay (s)} \\
+        \textbf{Dataset Trace} & \textbf{Policy Mode} & \textbf{FA / Hour $\downarrow$} & \textbf{TPR $\uparrow$} & \textbf{Delay (s) $\downarrow$} \\
         \midrule
         \multirow{2}{*}{NASA IMS bearing}
-        & BASELINE & 180.0 & 100.0\% & 0.00 \\
-        & FULL\_POLICY & \IMSFAFull{} & \IMSTPRFull{} & 0.10 \\
+        & BASELINE & 180.0 & 100.0\% & 0.00\,s \\
+        & FULL\_POLICY & \IMSFAFull & \IMSTPRFull & 0.10\,s \\
         \midrule
         \multirow{2}{*}{NASA C-MAPSS turbofan}
-        & BASELINE & 165.0 & 100.0\% & 0.00 \\
-        & FULL\_POLICY & \CMAPSSFAFull{} & \CMAPSSTPRFull{} & 0.10 \\
+        & BASELINE & 165.0 & 100.0\% & 0.00\,s \\
+        & FULL\_POLICY & \CMAPSSFAFull & \CMAPSSTPRFull & 0.10\,s \\
         \bottomrule
     \end{tabular}%
     }
