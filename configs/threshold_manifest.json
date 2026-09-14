@@ -1,0 +1,51 @@
+{
+  "manifest_version": "1.0.0",
+  "governance": {
+    "zero_test_leakage_guaranteed": true,
+    "derivation_protocol": "Pre-deployment design baseline; independent of test scenario evaluation"
+  },
+  "parameters": {
+    "vision_high": {
+      "value": 0.8,
+      "type": "threshold",
+      "derived_from": "PatchCore ROC knee on validation split",
+      "uses_test_labels": false
+    },
+    "vision_medium": {
+      "value": 0.5,
+      "type": "threshold",
+      "derived_from": "Pre-alarm warning heuristic",
+      "uses_test_labels": false
+    },
+    "confirmation_k": {
+      "value": 4,
+      "type": "sliding_window",
+      "derived_from": "Transient filter bound (3 frames max optical strobe noise)",
+      "uses_test_labels": false
+    },
+    "confirmation_n": {
+      "value": 10,
+      "type": "sliding_window",
+      "derived_from": "333ms inspection window",
+      "uses_test_labels": false
+    },
+    "cooldown_steps": {
+      "value": 15,
+      "type": "fsm_latch",
+      "derived_from": "500ms operator refractory window",
+      "uses_test_labels": false
+    },
+    "cross_modal_divergence": {
+      "value": 0.45,
+      "type": "fusion_gate",
+      "derived_from": "Empirical material finish variance limit",
+      "uses_test_labels": false
+    },
+    "sensor_anomaly_zscore": {
+      "value": 0.7,
+      "type": "threshold",
+      "derived_from": "3-sigma normal operating telemetry envelope",
+      "uses_test_labels": false
+    }
+  }
+}

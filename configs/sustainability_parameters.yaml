@@ -1,0 +1,23 @@
+# ESG Sustainability, Material Footprint, overall parameters
+grid_intensity_xi_grid: 0.230
+edge_power_watts: 15.0
+annual_production_volume: 1000000
+
+part_types:
+  metal_nut:
+    m_part: 0.45
+    kappa_mat: 2.89
+    E_rework: 1.85
+    gamma_fatal: 0.35
+    gamma_false_scrap: 0.05
+    theta_tier: 8.0
+    eta_recycle: 0.85
+
+  tile:
+    m_part: 1.20
+    kappa_mat: 0.78
+    E_rework: 3.20
+    gamma_fatal: 0.80
+    gamma_false_scrap: 0.02
+    theta_tier: 4.5
+    eta_recycle: 0.60

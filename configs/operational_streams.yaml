@@ -1,0 +1,19 @@
+﻿simulation:
+  n_stream: 10000
+  priors: [0.01, 0.05, 0.15]
+  cost_ratios: [10.0, 20.0, 50.0]
+  alert_budgets: [5.0, 10.0]
+  operator_capacity: 60
+  window_size: 1000
+
+regimes:
+  iid:
+    enabled: true
+  burst:
+    enabled: true
+    mean_block_lengths: [10, 20, 50]
+  drift:
+    enabled: true
+    drift_slopes: [0.05, 0.10, 0.20]
+
+seeds: [42, 123, 2026]

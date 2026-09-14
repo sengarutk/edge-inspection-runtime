@@ -1,0 +1,26 @@
+﻿dataset:
+  name: "MVTec AD"
+  categories: ["bottle", "cable", "carpet", "hazelnut", "metal_nut", "grid", "leather"]
+  resolution: [256, 256]
+  imagenet_norm:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+methods:
+  patchcore:
+    backbone: "resnet18"
+    coreset_sampling_ratio: 0.10
+    batch_k: 50
+  padim:
+    backbone: "resnet18"
+    reduced_dim: 100
+    reg_lambda: 0.01
+  autoencoder:
+    latent_dim: 256
+    epochs: 40
+    lr: 0.001
+
+hardware:
+  batch_size: 1
+  warmup_runs: 50
+  active_runs: 300

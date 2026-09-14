@@ -1,0 +1,8 @@
+optical_health:
+  blur_laplacian_threshold: 100.0
+  dark_frame_mean_threshold: 15.0
+  bright_frame_mean_threshold: 245.0
+inference:
+  mock_mode: true
+  mock_latency_ms: 8.5
+  input_resolution: [224, 224]
