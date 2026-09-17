@@ -141,7 +141,7 @@ def validate_and_generate_macros() -> Dict[str, Any]:
         r"\SpoolOverflowCount": "0",
         r"\GitCommitHash": git_hash,
         r"\ArtifactReleaseTag": "v0.4.0",
-        r"\ArtifactReleaseURL": "https://github.com/utkarshsengar/edge-quality-intelligence/releases/tag/v0.4.0",
+        r"\ArtifactReleaseURL": "https://github.com/sengarutk/edge-inspection-runtime",
     }
 
     macro_lines = [
