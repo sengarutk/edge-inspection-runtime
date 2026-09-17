@@ -49,7 +49,7 @@ class SensorReading(BaseModel):
 
 
 class SensorSimulator:
-    """Physics-informed multi-modal sensor simulator for edge machine condition monitoring."""
+    """Physics-inspired first-order sensor simulator for edge machine condition monitoring."""
 
     def __init__(
         self,

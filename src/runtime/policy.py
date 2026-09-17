@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Deque, Dict, Optional
 from loguru import logger
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from src.config import PolicyConfig, PolicyMode, load_policy_config
 from src.inference_service import InferenceResult
@@ -46,9 +46,16 @@ class PolicyDecision(BaseModel):
     """Structured temporal decision record emitted on every evaluation cycle."""
     model_config = ConfigDict(extra="forbid")
 
-    decision_id: str = Field(
+    event_id: str = Field(
         default_factory=lambda: str(uuid.uuid4()), description="Globally unique decision identifier (UUIDv4)."
     )
+    source_id: str = Field(default="edge-gateway-01", description="Identifier of originating edge node.")
+    sequence_id: int = Field(default=0, description="Monotonically increasing sequence ID per source.")
+    created_monotonic_ns: int = Field(
+        default_factory=time.monotonic_ns, description="Monotonic timestamp in nanoseconds."
+    )
+    schema_version: str = Field(default="1.0", description="Event data contract schema version.")
+    decision_id: str = Field(default="", description="Alias for event_id.")
     timestamp_utc: str = Field(..., description="ISO-8601 UTC formatted timestamp (YYYY-MM-DDTHH:MM:SS.fffZ).")
     camera_id: str = Field(..., description="Camera identifier evaluated.")
     machine_id: str = Field(..., description="Monitored machine unit identifier.")
@@ -70,10 +77,23 @@ class PolicyDecision(BaseModel):
         default_factory=dict, description="Detailed diagnostic telemetry and divergence values."
     )
 
+    @model_validator(mode="after")
+    def sync_ids(self) -> "PolicyDecision":
+        if not self.decision_id:
+            self.decision_id = self.event_id
+        elif not self.event_id:
+            self.event_id = self.decision_id
+        return self
+
     def to_mqtt_payload(self) -> Dict[str, Any]:
         """Serialize policy decision strictly conforming to edge messaging event contract."""
+        eid = self.event_id or self.decision_id or str(uuid.uuid4())
         return {
-            "event_id": self.decision_id,
+            "event_id": eid,
+            "source_id": self.source_id,
+            "sequence_id": self.sequence_id,
+            "created_monotonic_ns": self.created_monotonic_ns,
+            "schema_version": self.schema_version,
             "timestamp_utc": self.timestamp_utc,
             "camera_id": self.camera_id,
             "machine_id": self.machine_id,

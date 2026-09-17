@@ -1,7 +1,9 @@
 """Automated LaTeX Macro Generation from Empirical Benchmark Artifacts.
 
 Extracts empirical performance metrics, confidence intervals, and reliability KPIs
-from results JSON files and writes dynamic LaTeX macros to docs/generated_metrics.tex.
+from results JSON files and writes dynamic LaTeX macros to:
+  - docs/generated_metrics.tex
+  - docs/paper/generated_metrics.tex
 """
 
 from __future__ import annotations
@@ -26,7 +28,12 @@ def build_paper_metrics(
 ) -> Path:
     """Read benchmark JSON summaries and generate LaTeX macros with safe defaults."""
     out_path = Path(output_tex)
+    if not out_path.is_absolute():
+        out_path = PROJECT_ROOT / out_path
     out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    paper_out_path = PROJECT_ROOT / "docs" / "paper" / "generated_metrics.tex"
+    paper_out_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Defaults
     glitch_suppression = 100.0
@@ -39,14 +46,15 @@ def build_paper_metrics(
     mc_suppression = 91.5
 
     # 1. Load ablation summary
-    if Path(ablation_json).exists():
+    ablation_path = PROJECT_ROOT / ablation_json
+    if ablation_path.exists():
         try:
-            with open(ablation_json, "r", encoding="utf-8") as f:
+            with open(ablation_path, "r", encoding="utf-8") as f:
                 ablation_data = json.load(f)
             sustained = ablation_data.get("sustained_defects", {})
             sust_base_fa = sustained.get("BASELINE", {}).get("false_alarms_per_hour", {}).get("mean", 180.0)
             sust_full_fa = sustained.get("FULL_POLICY", {}).get("false_alarms_per_hour", {}).get("mean", 12.0)
-            sust_delay = 3.0  # Calibrated 3.0-frame confirmation delay (100ms at 30 FPS)
+            sust_delay = 3.0
             if sust_base_fa > 0:
                 sust_suppression = round(float(max(0.0, (1.0 - (sust_full_fa / sust_base_fa)) * 100.0)), 1)
 
@@ -59,9 +67,10 @@ def build_paper_metrics(
             logger.warning(f"Using fallback ablation values: {e}")
 
     # 2. Load real trace benchmark
-    if Path(real_trace_json).exists():
+    real_trace_path = PROJECT_ROOT / real_trace_json
+    if real_trace_path.exists():
         try:
-            with open(real_trace_json, "r", encoding="utf-8") as f:
+            with open(real_trace_path, "r", encoding="utf-8") as f:
                 real_trace_data = json.load(f)
             ims_res = real_trace_data.get("nasa_ims_bearing", {}).get("results", {})
             ims_tpr = round(float(ims_res.get("FULL_POLICY", {}).get("true_positive_rate", 1.0) * 100.0), 1)
@@ -74,9 +83,10 @@ def build_paper_metrics(
             logger.warning(f"Using fallback real trace values: {e}")
 
     # 3. Load mixed corruption summary
-    if Path(mixed_corruption_json).exists():
+    mixed_path = PROJECT_ROOT / mixed_corruption_json
+    if mixed_path.exists():
         try:
-            with open(mixed_corruption_json, "r", encoding="utf-8") as f:
+            with open(mixed_path, "r", encoding="utf-8") as f:
                 mixed_data = json.load(f)
             mc_ratio = mixed_data.get("aggregate_suppression_ratio", 0.915)
             if mc_ratio >= 0.0:
@@ -103,11 +113,21 @@ def build_paper_metrics(
         f"\\newcommand{{\\CMAPSSFAFull}}{{{cmapss_fa}}}",
         f"\\newcommand{{\\MixedCorruptionSuppression}}{{{mc_suppression}\\%}}",
     ]
+    content = "\n".join(macros) + "\n"
 
-    with open(out_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(macros) + "\n")
+    # Write to both docs/generated_metrics.tex and docs/paper/generated_metrics.tex
+    for target in [out_path, paper_out_path]:
+        # If QCF macros already exist, preserve them
+        if target.exists():
+            existing = target.read_text(encoding="utf-8")
+            qcf_lines = [l for l in existing.splitlines() if l.startswith("\\newcommand{\\QCF") or l.startswith("\\newcommand{\\SQI")]
+            if qcf_lines:
+                content_with_qcf = content + "\n% ESG Sustainability Empirical Macros\n" + "\n".join(qcf_lines) + "\n"
+                target.write_text(content_with_qcf, encoding="utf-8")
+                continue
+        target.write_text(content, encoding="utf-8")
 
-    logger.info(f"Successfully generated LaTeX macros ({len(macros)} entries) -> {out_path}")
+    logger.info(f"Successfully generated LaTeX macros -> {out_path} and {paper_out_path}")
     return out_path
 
 

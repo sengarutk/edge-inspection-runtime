@@ -56,6 +56,11 @@ class AuditLogDB:
                 """
                 CREATE TABLE IF NOT EXISTS risk_events (
                     event_id TEXT PRIMARY KEY,
+                    source_id TEXT DEFAULT 'edge-gateway-01',
+                    sequence_id INTEGER DEFAULT 0,
+                    timestamp_ns INTEGER DEFAULT 0,
+                    created_monotonic_ns INTEGER DEFAULT 0,
+                    schema_version TEXT DEFAULT '1.0',
                     timestamp_utc TEXT NOT NULL,
                     camera_id TEXT NOT NULL,
                     machine_id TEXT NOT NULL,
@@ -163,19 +168,27 @@ class AuditLogDB:
 
         initial_review_status = str(data.get("review_status") or ("NOMINAL" if risk_state == "NORMAL" else "PENDING"))
 
+        source_id = str(data.get("source_id", "edge-gateway-01"))
+        sequence_id = int(data.get("sequence_id", 0))
+        created_monotonic_ns = int(data.get("created_monotonic_ns", 0))
+        schema_version = str(data.get("schema_version", "1.0"))
+        timestamp_ns = created_monotonic_ns
+
         with self._lock, self._conn:
             self._conn.execute(
                 """
                 INSERT OR REPLACE INTO risk_events (
-                    event_id, timestamp_utc, camera_id, machine_id, machine_state,
+                    event_id, source_id, sequence_id, timestamp_ns, created_monotonic_ns, schema_version,
+                    timestamp_utc, camera_id, machine_id, machine_state,
                     risk_state, trigger_reason, vision_raw, vision_ema, sensor_raw, sensor_ema,
                     cooldown_remaining, is_degraded, frame_id, reading_id, evidence_uri,
                     raw_payload, review_status, operator_notes, reviewed_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL);
                 """,
                 (
-                    event_id, timestamp_utc, camera_id, machine_id, machine_state,
+                    event_id, source_id, sequence_id, timestamp_ns, created_monotonic_ns, schema_version,
+                    timestamp_utc, camera_id, machine_id, machine_state,
                     risk_state, trigger_reason, vision_raw, vision_ema, sensor_raw, sensor_ema,
                     cooldown_remaining, is_degraded, frame_id, reading_id, evidence_uri,
                     raw_payload, initial_review_status,

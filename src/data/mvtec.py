@@ -1,11 +1,16 @@
 import os
 import glob
+from pathlib import Path
 from typing import List, Tuple, Dict, Any, Optional
 from PIL import Image
 import numpy as np
 import torch
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
+
+# Anchored repository paths
+ROOT_DIR = Path(__file__).resolve().parents[2]
+DEFAULT_DATA_DIR = ROOT_DIR / "data" / "mvtec_ad"
 
 # Official ImageNet normalization statistics
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
@@ -50,11 +55,18 @@ class MVTecTrainNormal(Dataset):
     """
     Loads normal training images from {root}/{category}/train/good/*.png.
     """
-    def __init__(self, root: str, category: str, img_size: int = 256):
+    def __init__(self, root: Optional[str] = None, category: str = "bottle", img_size: int = 256):
+        if root is None or str(root) == "":
+            root = str(DEFAULT_DATA_DIR)
+        elif not os.path.isabs(str(root)):
+            candidate = ROOT_DIR / root
+            if candidate.exists() or not os.path.exists(str(root)):
+                root = str(candidate)
+
         self.root = root
         self.category = category
         self.img_size = img_size
-        self.img_dir = os.path.join(root, category, "train", "good")
+        self.img_dir = os.path.join(str(root), category, "train", "good")
 
         if not os.path.exists(self.img_dir):
             raise FileNotFoundError(
@@ -87,12 +99,19 @@ class MVTecTest(Dataset):
       - {root}/{category}/test/{defect_type}/*.png
       - {root}/{category}/ground_truth/{defect_type}/*_mask.png
     """
-    def __init__(self, root: str, category: str, img_size: int = 256):
+    def __init__(self, root: Optional[str] = None, category: str = "bottle", img_size: int = 256):
+        if root is None or str(root) == "":
+            root = str(DEFAULT_DATA_DIR)
+        elif not os.path.isabs(str(root)):
+            candidate = ROOT_DIR / root
+            if candidate.exists() or not os.path.exists(str(root)):
+                root = str(candidate)
+
         self.root = root
         self.category = category
         self.img_size = img_size
-        self.test_dir = os.path.join(root, category, "test")
-        self.gt_dir = os.path.join(root, category, "ground_truth")
+        self.test_dir = os.path.join(str(root), category, "test")
+        self.gt_dir = os.path.join(str(root), category, "ground_truth")
 
         if not os.path.exists(self.test_dir):
             raise FileNotFoundError(

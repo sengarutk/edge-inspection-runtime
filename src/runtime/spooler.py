@@ -43,6 +43,8 @@ class DiskSpooler:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
         self._conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
+        self._conn.execute("PRAGMA journal_mode = WAL;")
+        self._conn.execute("PRAGMA synchronous = NORMAL;")
         self._init_db()
 
         logger.info(f"Initialized DiskSpooler (db={self.db_path}, max_records={self.max_records})")
@@ -54,6 +56,7 @@ class DiskSpooler:
                 """
                 CREATE TABLE IF NOT EXISTS spool_queue (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_id TEXT,
                     topic TEXT NOT NULL,
                     payload TEXT NOT NULL,
                     qos INTEGER NOT NULL,
@@ -62,8 +65,17 @@ class DiskSpooler:
                 );
                 """
             )
+            cursor = self._conn.cursor()
+            cursor.execute("PRAGMA table_info(spool_queue);")
+            cols = [col[1] for col in cursor.fetchall()]
+            if cols and "event_id" not in cols:
+                self._conn.execute("ALTER TABLE spool_queue ADD COLUMN event_id TEXT;")
+
             self._conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_spool_id ON spool_queue(id ASC);"
+            )
+            self._conn.execute(
+                "CREATE UNIQUE INDEX IF NOT EXISTS ux_spool_event_id ON spool_queue(event_id) WHERE event_id IS NOT NULL;"
             )
 
     def enqueue(self, topic: str, payload: str, qos: int = 1) -> bool:
@@ -78,13 +90,21 @@ class DiskSpooler:
             True if successfully inserted.
         """
         now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+        event_id = None
+        try:
+            parsed = json.loads(payload) if isinstance(payload, str) else payload
+            if isinstance(parsed, dict):
+                event_id = parsed.get("event_id") or parsed.get("decision_id")
+        except Exception:
+            pass
+
         with self._lock, self._conn:
             self._conn.execute(
                 """
-                INSERT INTO spool_queue (topic, payload, qos, created_at, retry_count)
-                VALUES (?, ?, ?, ?, 0);
+                INSERT OR IGNORE INTO spool_queue (event_id, topic, payload, qos, created_at, retry_count)
+                VALUES (?, ?, ?, ?, ?, 0);
                 """,
-                (topic, payload, qos, now_utc),
+                (event_id, topic, payload, qos, now_utc),
             )
             # Enforce max record limit
             self.purge_expired(self.max_records)

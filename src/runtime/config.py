@@ -6,6 +6,9 @@ Provides strict Pydantic V2 models and cached configuration loaders.
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+DEFAULT_DATA_DIR = ROOT_DIR / "data" / "mvtec_ad"
 from typing import Any, Dict, List, Optional, Type, TypeVar
 import yaml
 from loguru import logger

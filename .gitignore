@@ -30,3 +30,8 @@ dist/
 *.db
 evidence_store/
 spooler_queue/
+
+# Large dataset directories
+data/mvtec_ad/
+data/evidence/
+results/mvtec_ad/

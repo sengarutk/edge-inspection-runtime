@@ -11,6 +11,7 @@ Generates PDF and 300 DPI PNG figures into docs/figures/:
 """
 
 from __future__ import annotations
+import shutil
 
 import json
 import os
@@ -251,24 +252,18 @@ def generate_per_scenario_decision_attribution_plot(
     ax.set_ylim(0.0, 1.0)
     ax.set_ylabel("Attribution fraction", fontsize=9)
     ax.set_xlabel("")
-    ax.tick_params(axis="x", labelrotation=25, labelsize=8)
+    fig.subplots_adjust(left=0.10, right=0.98, top=0.96, bottom=0.42)
+    ax.tick_params(axis="x", labelrotation=20, labelsize=7.5)
     ax.tick_params(axis="y", labelsize=8)
 
     ax.grid(axis="y", linestyle=":", linewidth=0.55, alpha=0.55)
 
     ax.legend(
         loc="upper center",
-        bbox_to_anchor=(0.5, -0.26),
-        ncol=2,
+        bbox_to_anchor=(0.5, -0.38),
+        ncol=3,
         frameon=False,
-        fontsize=7.5,
-    )
-
-    fig.subplots_adjust(
-        left=0.10,
-        right=0.98,
-        top=0.95,
-        bottom=0.28,
+        fontsize=7.0,
     )
 
     fig.savefig(out_pdf, format="pdf", bbox_inches="tight", pad_inches=0.02)
@@ -503,7 +498,23 @@ def generate_all_publication_figures(
     var_files = generate_queue_variability_plot(figures_dir)
     generated_files.extend(var_files)
 
-    print(f"Generated {len(generated_files)} publication figures in {figures_dir}")
+    active_paper_figures = {
+        "pareto_tradeoff.pdf",
+        "pareto_tradeoff.png",
+        "queue_workload_analysis.pdf",
+        "queue_workload_analysis.png",
+        "decision_attribution_per_scenario.pdf",
+        "decision_attribution_per_scenario.png",
+        "sustainability_tradeoff.pdf",
+        "sustainability_tradeoff.png",
+    }
+    paper_fig_path = PROJECT_ROOT / "docs" / "paper" / "figures"
+    paper_fig_path.mkdir(parents=True, exist_ok=True)
+    for gf in generated_files:
+        src_f = Path(gf)
+        if src_f.exists() and src_f.name in active_paper_figures:
+            shutil.copy2(src_f, paper_fig_path / src_f.name)
+    print(f"Generated {len(generated_files)} publication figures in {figures_dir} and mirrored to {paper_fig_path}")
     return generated_files
 
 
