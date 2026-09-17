@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software or evaluation framework, please cite it as below."
+authors:
+  - family-names: "Sengar"
+    given-names: "Utkarsh"
+    affiliation: "Indian Institute of Technology Dharwad"
+    email: "cs23b026@iitdh.ac.in"
+title: "Reducing Alert Fatigue in Industrial Edge Inspection Through Multi-Modal Temporal Policy Gating and Durable Event Spooling"
+version: 0.4.0
+date-released: 2026-09-17
+url: "https://github.com/sengarutk/edge-inspection-runtime"
+license: MIT

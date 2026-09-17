@@ -1,37 +1,54 @@
-# Virtual environments
-.venv/
-venv/
-ENV/
-
-# Python bytecode
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.venv/
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Pytest / Coverage
+# Testing & Coverage
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Build / Distribution
-build/
-dist/
-*.egg-info/
-.eggs/
-
-# IDE / OS
-.vscode/
-.idea/
-.DS_Store
-*.swp
-
-# Transient logs / test outputs
-*.sqlite
+# Local databases and logs
 *.db
-evidence_store/
-spooler_queue/
+*.db-wal
+*.db-shm
+*.sqlite3
+*.log
 
-# Large dataset directories
+# LaTeX Auxiliary Build Files
+docs/paper/*.aux
+docs/paper/*.bbl
+docs/paper/*.blg
+docs/paper/*.log
+docs/paper/*.out
+docs/paper/*.toc
+docs/paper/*.synctex.gz
+docs/paper/*.fls
+docs/paper/*.fdb_latexmk
+
+# Keep compiled manuscript and figures
+!docs/paper/figures/*.pdf
+!docs/paper/main.pdf
+
+# Large datasets and evaluation caches
 data/mvtec_ad/
 data/evidence/
 results/mvtec_ad/
