@@ -232,11 +232,11 @@ Fig.~\ref{fig:decision_attribution} presents granular decision attribution. Real
         \toprule
         \textbf{Synthetic degradation proxy} & \textbf{Policy Mode} & \textbf{Pre-fault alerts/hr $\downarrow$} & \textbf{Actionable Routing Recall $\uparrow$} & \textbf{Delay (s) $\downarrow$} \\
         \midrule
-        NASA IMS bearing & BASELINE & 180.0 & 100.0\% & 0.00 \\
-        (Informed synthetic) & FULL\_POLICY & \IMSFAFull{} & \IMSActionableRoutingRecall{} & 0.10 \\
+        IMS-informed bearing proxy & BASELINE & 180.0 & 100.0\% & 0.00 \\
+        (Synthetic degradation) & FULL\_POLICY & \IMSFAFull{} & \IMSActionableRoutingRecall{} & 0.10 \\
         \midrule
-        NASA C-MAPSS turbofan & BASELINE & 165.0 & 100.0\% & 0.00 \\
-        (Informed synthetic) & FULL\_POLICY & \CMAPSSFAFull{} & \CMAPSSActionableRoutingRecall{} & 0.10 \\
+        C-MAPSS-informed turbofan proxy & BASELINE & 165.0 & 100.0\% & 0.00 \\
+        (Synthetic degradation) & FULL\_POLICY & \CMAPSSFAFull{} & \CMAPSSActionableRoutingRecall{} & 0.10 \\
         \bottomrule
     \end{tabular}%
     }
@@ -244,7 +244,7 @@ Fig.~\ref{fig:decision_attribution} presents granular decision attribution. Real
     {\scriptsize Normalized from one 600-step (20.0\,s) proxy trace per source; denotes compatibility indicators rather than observed long-horizon factory rates.\par}
 \end{table}
 
-Table~\ref{tab:real_trace_results} reports illustrative behavior under two NASA-informed synthetic proxies, exercising the interface and policy logic without constituting external factory validation. Across both proxies, \texttt{FULL\_POLICY} preserved actionable routing under the defined onset window while suppressing baseline pre-fault alert emissions from $\ge 165$/hr to \IMSFAFull{}/hr. Across \SpoolStressGeneratedEvents{} generated event records in the 30-second broker-disconnection tests, idempotent ingestion recorded zero missing persisted event identifiers, zero duplicate persisted records, and zero sequence-order violations. Queue occupancy peaked at \SpoolStressPeakQueueDepth{} records against the \SpoolBufferCapacity{}-record limit, with zero capacity overflows (\SpoolOverflowCount{}), draining in under 0.45\,s post-reconnection under SQLite WAL (\texttt{synchronous=NORMAL}) and MQTT QoS~1. End-to-end pipeline latency averages \MeanPipelineLatency{}, while core inference and policy gating achieve a $p95$ latency of \CorePNinetyFiveLatency{}, meeting the \TargetDeadlineMs{} cycle target with \DeadlineMissRate{} deadline misses over \LatencyCycleCount{} cycles.
+Table~\ref{tab:real_trace_results} reports illustrative behavior under two NASA-informed synthetic proxies, exercising the interface and policy logic without constituting external factory validation. Across both illustrative proxy traces, \texttt{FULL\_POLICY} preserved the defined actionable-routing outcome under the onset window while suppressing baseline pre-fault alert emissions from $\ge 165$/hr to \IMSFAFull{}/hr. Across \SpoolStressGeneratedEvents{} generated event records in the 30-second broker-disconnection tests, idempotent ingestion recorded zero missing persisted event identifiers, zero duplicate persisted records, and zero sequence-order violations. Queue occupancy peaked at \SpoolStressPeakQueueDepth{} records against the \SpoolBufferCapacity{}-record limit, with zero capacity overflows (\SpoolOverflowCount{}), draining in under 0.45\,s post-reconnection under SQLite WAL (\texttt{synchronous=NORMAL}) and MQTT QoS~1. End-to-end pipeline latency averages \MeanPipelineLatency{}, while core inference and policy gating achieve a $p95$ latency of \CorePNinetyFiveLatency{}, meeting the \TargetDeadlineMs{} cycle target with \DeadlineMissRate{} deadline misses over \LatencyCycleCount{} cycles.
 
 % ============================================================
 
