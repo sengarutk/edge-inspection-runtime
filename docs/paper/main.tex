@@ -36,9 +36,19 @@
 \setlength{\dblfloatsep}{3pt plus 1pt minus 1pt}
 \setlength{\abovecaptionskip}{2.5pt plus 1pt minus 1pt}
 \setlength{\belowcaptionskip}{2.5pt plus 1pt minus 1pt}
-\setlength{\abovedisplayskip}{1.5pt plus 1pt minus 1pt}
-\setlength{\belowdisplayskip}{1.5pt plus 1pt minus 1pt}
-\def\IEEEbibitemsep{0pt plus 0.2pt}
+\setlength{\abovedisplayskip}{0.5pt plus 0.5pt minus 0.5pt}
+\setlength{\belowdisplayskip}{0.5pt plus 0.5pt minus 0.5pt}
+\setlength{\abovedisplayshortskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+\def\IEEEbibitemsep{-3pt plus 0.5pt minus 0.5pt}
+
+
+\makeatletter
+\def\section{\@startsection{section}{1}{\z@}{0.7ex plus 0.2ex minus 0.1ex}%
+{0.3ex plus 0.2ex minus 0.1ex}{\normalfont\normalsize\centering\scshape}}%
+\def\subsection{\@startsection{subsection}{2}{\z@}{0.6ex plus 0.2ex minus 0.1ex}%
+{0.2ex plus 0.2ex minus 0.1ex}{\normalfont\normalsize\itshape}}%
+\makeatother
 
 \begin{document}
 
@@ -57,7 +67,7 @@ Dharwad, Karnataka, India\\
 \maketitle
 
 \begin{abstract}
-High-throughput automated visual quality inspection at the industrial edge is vulnerable to frequent nuisance alarms, operator cognitive fatigue, and critical evidence loss during broker disconnects. We present an edge inspection runtime architecture combining patch-level visual anomaly scores, time-aligned simulated physical telemetry within controlled workloads, and finite-state temporal policy gating. Our multi-modal policy framework executes optical clarity verification, dual exponential moving-average smoothing, $k$-of-$N$ sliding-window confirmation, operational-state suppression, cross-modal divergence triage, and an incident refractory cooldown state machine. An embedded SQLite write-ahead-log spooler provides zero observed missing records within the evaluated \SpoolBufferCapacity{}-record buffer during network partitions under SQLite WAL synchronous NORMAL persistence and MQTT QoS~1 at-least-once delivery. Evaluated across \TotalPolicyModes{} policy modes, \TotalWorkloadScenarios{} standardized industrial workloads, and offline evaluation of NASA IMS-informed and NASA C-MAPSS-informed synthetic degradation proxies with percentile bootstrap confidence intervals ($B = \AblationBootstrapResamples{}$), the runtime records observed \GlitchSuppressionFull{} false-alarm suppression in the evaluated transient-glitch workload, \SustainedSuppressionFull{} nuisance-alert reduction with a bounded \SustainedMedianDelay{}-frame delay in sustained-defect regimes, and an end-to-end execution latency of \MeanPipelineLatency{} with \DeadlineMissRate{} deadline misses against the \TargetDeadlineMs{} cycle target.
+High-throughput automated visual quality inspection at the industrial edge is vulnerable to frequent nuisance alarms, operator cognitive fatigue, and critical evidence loss during broker disconnects. We present an edge inspection runtime architecture combining patch-level visual anomaly scores, time-aligned simulated physical telemetry within controlled workloads, and finite-state temporal policy gating. Our multi-modal policy framework executes optical clarity verification, dual exponential moving-average smoothing, $k$-of-$N$ sliding-window confirmation, operational-state suppression, cross-modal divergence triage, and an incident refractory cooldown state machine. An embedded SQLite write-ahead-log spooler provides zero observed missing records within the evaluated \SpoolBufferCapacity{}-record buffer during simulated network partitions under SQLite WAL synchronous NORMAL persistence and MQTT QoS~1 at-least-once delivery. Evaluated across \TotalPolicyModes{} policy modes, \TotalWorkloadScenarios{} standardized synthetic industrial workloads, and offline evaluation of NASA-informed degradation proxies with percentile bootstrap confidence intervals ($B = \AblationBootstrapResamples{}$), the runtime records observed \GlitchSuppressionFull{} false-alarm suppression in the evaluated synthetic transient-glitch workload, \SustainedSuppressionFull{} nuisance-alert reduction with a bounded \SustainedMedianDelay{}-frame delay under sustained-defect simulation, and an end-to-end execution latency of \MeanPipelineLatency{} with \DeadlineMissRate{} deadline misses under injected forward-pass latency against the \TargetDeadlineMs{} cycle target.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -69,16 +79,16 @@ Edge computing, visual anomaly detection, multi-modal sensor fusion, temporal ga
 % ============================================================
 Industrial visual inspection research increasingly considers deep feature extractors, including PatchCore~\cite{roth2022patchcore} and PaDiM~\cite{defard2021padim}, for deployment-oriented anomaly detection on resource-constrained edge accelerators~\cite{chen2021edge}. While achieving strong pixel AU-PRO and image AUROC under laboratory conditions~\cite{bergmann2021mvtec}, their deployment viability can be constrained by three operational vulnerabilities:
 
-\begin{enumerate}\setlength{\topsep}{1.5pt}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
+\begin{enumerate}\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}\setlength{\itemsep}{-0.5pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
 \item \textbf{Alert Fatigue and Cognitive Overload:} Single-frame thresholding induces bursts of nuisance alerts from reflections, dust, and non-defect vibrations. Modeling operator review capacity at $\mu = 60$~reviews/hr~\cite{isa182alarm}, excessive arrival rates destabilize triage queues ($\rho \ge 1.0$), risking that genuine defect incidents are overlooked.
     \item \textbf{Edge Network Volatility and Evidence Loss:} Industrial plants experience frequent network transients and broker restarts. Unbuffered edge clients risk discarding locally generated evidence during broker partitions unless persisted in durable local storage.
     \item \textbf{Cycle-Time Constraints:} Defect arbitration and multi-modal sensory alignment must complete within the production line cycle time under the expected operating workload ($\le \TargetDeadlineMs{}$) to prevent uncoordinated line stoppages.
 \end{enumerate}
 
-Prior industrial anomaly-detection literature primarily emphasizes visual ranking and localization accuracy on static benchmarks~\cite{roth2022patchcore,defard2021padim,bergmann2021mvtec}, whereas edge-AI studies prioritize model compression and hardware placement~\cite{chen2021edge}. Alarm-management standards provide operational guidelines for operator triage workload~\cite{isa182alarm}, and transport protocols address broker messaging semantics~\cite{mqttv5,sqlitewal}. This work does not propose a new deep anomaly-detection backbone or factory-floor validation; rather, it conducts an operational systems evaluation of how multi-modal temporal policy gating, cross-modal divergence triage, queue constraints, and local event spooling interact under controlled industrial inspection workloads.
+Prior industrial anomaly-detection literature primarily emphasizes visual ranking on static benchmarks~\cite{roth2022patchcore,defard2021padim,bergmann2021mvtec}, whereas edge-AI studies prioritize model compression~\cite{chen2021edge}. Alarm-management standards provide operational guidelines for operator triage workload~\cite{isa182alarm}, and transport protocols address broker messaging semantics~\cite{mqttv5,sqlitewal}. This work does not propose a new deep anomaly-detection backbone or factory-floor validation; rather, it conducts an operational systems evaluation of how multi-modal temporal policy gating, cross-modal divergence triage, queue constraints, and local event spooling interact under controlled inspection workloads. All empirical comparisons are internal ablations against a raw single-frame threshold baseline; we do not benchmark against external alarm-rationalization or sensor-fusion schemes in this initial study.
 
 To resolve these challenges, this paper introduces an edge inspection runtime unifying multi-modal temporal policy gating with local write-ahead event spooling. Our contributions are fourfold:
-\begin{itemize}\setlength{\topsep}{1.5pt}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
+\begin{itemize}\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}\setlength{\itemsep}{-0.5pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
 \item We design an edge runtime architecture combining PatchCore-style visual anomaly scores with time-aligned simulated physical telemetry.
     \item We formulate a multi-stage temporal gating policy incorporating dual moving averages, $k$-of-$N$ sliding confirmation, cross-modal divergence handling, and a refractory cooldown state machine.
     \item We deploy an embedded SQLite write-ahead-log (WAL) spooler delivering zero observed missing event records during evaluated partition tests within the configured spool capacity.
@@ -114,7 +124,7 @@ Cross-modal divergence between vision and physical telemetry is evaluated on the
 If $\bar{v}_t \ge \tau_{\mathrm{med}}$, $\bar{s}_t < \tau_{\mathrm{phys}}$, and $\Delta_t \ge \tau_{\mathrm{div}}$ (with $\tau_{\mathrm{med}} = 0.50$, $\tau_{\mathrm{phys}} = 0.65$, and $\tau_{\mathrm{div}} = 0.45$), candidate triggers are treated as cross-modal discrepancies and routed to operator review (\texttt{REVIEW\_REQUIRED}) rather than automatic critical line escalation. When physical telemetry channels are unavailable or degraded, the physical score is not treated as independent corroboration; elevated visual risk is routed to \texttt{REVIEW\_REQUIRED} unless an independent physical channel satisfies the critical-fault criterion.
 
 Inspection events are processed through an explicit seven-stage priority cascade:
-\begin{enumerate}\setlength{\topsep}{1.5pt}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
+\begin{enumerate}\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}\setlength{\itemsep}{-0.5pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
 \item \textbf{Optical Health Validation:} Evaluate $\sigma_{\mathrm{blur}}^2 \ge \tau_{\mathrm{blur}}$. If violated, disable vision-only escalation and emit an optical-degradation status; independently confirmed physical faults remain eligible for escalation.
     \item \textbf{State Update:} Compute smoothed visual and physical EMA states ($\bar{v}_t, \bar{s}_t$).
     \item \textbf{Operational Machine-State Gating:} Suppress alerts during non-operational regimes (\texttt{IDLE} / \texttt{MAINTENANCE}).
@@ -123,6 +133,8 @@ Inspection events are processed through an explicit seven-stage priority cascade
     \item \textbf{Cross-Modal Divergence Triage:} Route candidate visual exceedances with nominal physical telemetry ($\Delta_t \ge \tau_{\mathrm{div}}$) to \texttt{REVIEW\_REQUIRED}.
     \item \textbf{Durable Dispatch:} Emit an immutable, auditable decision event and append it to the local SQLite WAL spooler.
 \end{enumerate}
+
+\noindent\textbf{Parameterization and Collision Bounds:} The policy constants ($\tau_{\mathrm{high}} = 0.80$, $k = 4$, $N = 10$, $\tau_{\mathrm{div}} = 0.45$, $T_{\mathrm{cool}} = 15$) were established via calibration on representative baseline runs rather than formal optimization; full sensitivity sweeps remain future work. While refractory cooldown suppresses nuisance re-alerts for a single defect, triggers within $T_{\mathrm{cool}}$ frames are aggregated under the active incident ID, inherently trading multi-incident discrimination for operator load suppression.
 
 \subsection{Incident Refractory Cooldown Finite-State Machine}
 Upon confirming a defect event, an incident state machine transitions to \texttt{ALERT\_ACTIVE} and initiates an incident refractory cooldown period of length $T_{\mathrm{cool}} = 15$ frames. Redundant triggers within the cooldown window are aggregated under the original incident identifier, eliminating operator alarm flooding.
@@ -141,7 +153,7 @@ Here, ``durable'' denotes file-backed retention across the evaluated broker-part
 
 \begin{table*}[!t]
     \centering
-    \renewcommand{\arraystretch}{0.80}
+    \renewcommand{\arraystretch}{0.78}
     \caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios. Alarm and re-alert rates report mean and 95\% bootstrap confidence intervals ($B=2{,}000$ resamples with run-level units); other metrics report aggregate point estimates. Suppression/reduction is relative to baseline ($R = 1 - \mathrm{Rate}_{\mathrm{pol}}/\mathrm{Rate}_{\mathrm{base}}$) and is undefined (N/A) when baseline rate is zero.}
     \label{tab:ablation_results}
     \resizebox{\textwidth}{!}{%
@@ -196,7 +208,7 @@ Here, ``durable'' denotes file-backed retention across the evaluated broker-part
 We benchmark the runtime across \TotalWorkloadScenarios{} standardized workloads: (1) nominal operation, (2) transient optical flickers, (3) sustained defects, (4) optical blur degradation, (5) sensor drift and channel dropout, and (6) process distribution shift.
 
 \subsection{Statistical Evaluation Protocol}
-Experiments execute multi-seed repetitions ($N_{\mathrm{seeds}} = 3$, 300 cycles/run). Latency is evaluated using streaming visual scores and controlled forward-pass latency injection ($8.20 \pm 0.25$\,ms on $224 \times 224$ inputs) on the disclosed benchmark testbed, isolating policy, telemetry fusion, and local spooler overheads from external camera hardware acquisition drivers and broker network transit. Summary metrics report mean and 95\% bootstrap confidence intervals ($B = \AblationBootstrapResamples{}$ resamples). Multiple comparisons against baseline use paired Wilcoxon signed-rank tests with Holm--Bonferroni step-down correction at $\alpha = 0.05$.
+Experiments execute multi-seed repetitions ($N_{\mathrm{seeds}} = 3$, 300 cycles/run). Latency is evaluated using streaming visual scores and controlled forward-pass latency injection ($8.20 \pm 0.25$\,ms on $224 \times 224$ inputs) on the disclosed benchmark testbed, isolating policy, telemetry fusion, and local spooler overheads from external camera hardware acquisition drivers and broker network transit. Summary metrics report mean and 95\% bootstrap confidence intervals ($B = \AblationBootstrapResamples{}$ resamples). The bootstrap intervals provide descriptive uncertainty estimates conditional on the simulated workload and matched seeds ($N_{\mathrm{seeds}} = 3$); formal hypothesis testing across variants is omitted to maintain focus on systems characterization.
 
 \subsection{Trace-Replay Protocol and Proxy Scope}
 Offline trace evaluation exercises the telemetry interface through two NASA-informed synthetic degradation proxies: (i)~a NASA IMS-informed synthetic bearing proxy and (ii)~a C-MAPSS-informed synthetic turbofan proxy (one 600-step controlled proxy trace per source at 30\,FPS). The protocol specifies: (1)~\textbf{Warmup Window:} $T_{\mathrm{warm}} = 50$ samples ($1.67$\,s) for baseline calibration without alert emission; (2)~\textbf{Failure Onset \& Actionable Routing Recall:} onset is defined by the scenario generator at Step 420 (bearing vibration reaches $0.80\,g$) and Step 390 (turbofan temperature reaches $66.0^{\circ}\mathrm{C}$), measuring successful critical escalation or designated review triage within $\Delta_{\max} = 15$ frames post-onset; and (3)~\textbf{Pre-fault Alerts:} emitted review or high-severity events prior to scripted onset ($\mathrm{FA/hr} = (\mathrm{FA\_Count} / T_{\mathrm{pre\_fault\_sec}}) \times 3600$). Cross-modal relationships are controlled by the scenario generator to evaluate runtime policy logic rather than factory generalization.
@@ -207,7 +219,7 @@ A false alarm is an emitted \texttt{REVIEW\_REQUIRED} or \texttt{HIGH\_SEVERITY}
 % ============================================================
 \section{Operational Results and Trade-Offs}
 % ============================================================
-Table~\ref{tab:ablation_results} summarizes the 8-policy ablation across all tested scenarios. In transient glitches, \texttt{BASELINE} triggers 120 false alarms/hr (100\% operator overload), whereas \texttt{EMA\_KOFN} and \texttt{FULL\_POLICY} achieve observed 100.0\% alert suppression. Under sustained defects, \texttt{FULL\_POLICY} suppresses nuisance re-triggers by \SustainedSuppressionFull{}, restricting alert volume to 12.0 alarms/hr with bounded \SustainedMedianDelay{}-frame delay while maintaining \SustainedIncidentRoutingRecall{} actionable incident routing recall ($\Delta_{\max} = 15$ frames). An 8-case policy-contract suite verified rule execution across operational regimes.
+Table~\ref{tab:ablation_results} summarizes the 8-policy ablation across all tested scenarios. In transient glitches, \texttt{BASELINE} triggers 120 false alarms/hr (100\% operator overload), whereas \texttt{EMA\_KOFN} and \texttt{FULL\_POLICY} achieve observed 100.0\% alert suppression in the evaluated synthetic workload; multiple intermediate ablations also eliminate false alarms here, confirming that this scenario primarily exercises sliding-window persistence gating. Under sustained defects, \texttt{FULL\_POLICY} suppresses nuisance re-triggers by \SustainedSuppressionFull{}, restricting alert volume to 12.0 alarms/hr with bounded \SustainedMedianDelay{}-frame delay while maintaining \SustainedIncidentRoutingRecall{} actionable incident routing recall ($\Delta_{\max} = 15$ frames). An 8-case policy-contract suite verified rule execution across operational regimes.
 
 Fig.~\ref{fig:pareto_queue}(a) illustrates the trade-off between false alarm rate and detection delay, where \texttt{FULL\_POLICY} achieves the lowest observed nuisance re-alert rate at a bounded 3.0-frame delay. Fig.~\ref{fig:pareto_queue}(b) models triage queue dynamics under an $M/M/1$ queue~\cite{shortle2018fundamentals} with service capacity $\mu = 60$~reviews/hr (an illustrative baseline of $\sim$1\,min per triage review, not a universal human limit). Each emitted \texttt{REVIEW\_REQUIRED} or un-cooldowned \texttt{HIGH\_SEVERITY} event constitutes one review arrival. For $\lambda < \mu$, utilization is $\rho = \lambda / \mu$ and expected waiting time is $W_q = \lambda / [\mu(\mu - \lambda)]$; no finite steady state exists for $\lambda \ge \mu$. At arrival rate $\lambda = 12$~reviews/hr, \texttt{FULL\_POLICY} bounds operator utilization to $\rho = 0.20$ ($W_q = 0.25$\,min), whereas baselines exceed station capacity ($\lambda \ge 60, \rho \ge 1.0$), entering the shaded unstable queuing regime of unbounded backlog growth.
 
@@ -224,7 +236,7 @@ Fig.~\ref{fig:decision_attribution} presents granular decision attribution. Real
 % Single-Column Table II: NASA Traces
 \begin{table}[!b]
     \centering
-    \renewcommand{\arraystretch}{0.80}
+    \renewcommand{\arraystretch}{0.78}
     \caption{Offline Replay Behavior on NASA-Informed Bearing and Turbofan Synthetic Proxies (One 600-Step Trace Each). Actionable routing recall measures critical escalation or designated review within 15 frames of onset.}
     \label{tab:real_trace_results}
     \resizebox{\columnwidth}{!}{%
@@ -251,7 +263,7 @@ Table~\ref{tab:real_trace_results} reports illustrative behavior under two NASA-
 \section{Threats to Validity}
 % ============================================================
 We identify five primary threats:
-\begin{enumerate}\setlength{\topsep}{1.5pt}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
+\begin{enumerate}\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}\setlength{\itemsep}{-0.5pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}
 \item \textbf{Physics-Inspired Sensor Simulation:} Physical vibration and thermal telemetry were generated using calibrated first-order equations rather than direct plant recordings; physical plant machinery may exhibit non-linear acoustic harmonics.
     \item \textbf{Discrete Scenario Transitions:} Evaluated scenarios feature distinct synthetic injection windows rather than continuous non-stationary operational machine drift.
     \item \textbf{Stationary Queue Assumptions:} The $M/M/1$ review model assumes Poisson arrival processes and exponential service times; human operator cognitive fatigue involves state-dependent diurnal shifts.
@@ -263,7 +275,7 @@ We identify five primary threats:
 
 \section{Conclusion and Artifact Availability}
 % ============================================================
-We presented an industrial cyber-physical edge inspection runtime unifying PatchCore-style visual anomaly scores, physical sensor telemetry, temporal policy gating, and SQLite WAL-backed local event spooling. Across the evaluated benchmark workloads, 18 corruption types, and offline evaluation of NASA-informed synthetic degradation proxies, our runtime recorded zero false alarms in the evaluated transient-glitch workload, reduced sustained-defect nuisance re-alerts by \SustainedSuppressionFull{} while maintaining bounded incident detection delay, and recorded zero observed missing event identifiers during evaluated broker-partition tests within the configured spool capacity. Suppressing nuisance inspection alarms reduces avoidable manual review; quantifying material scrap, lifecycle carbon impacts, and paired factory validation remains future work. The versioned artifact corresponding to this evaluation is archived at Git release \texttt{\ArtifactReleaseTag{}} (commit \texttt{\GitCommitHash{}}). The release archive, configuration files, and reproduction instructions are available at: \url{https://github.com/sengarutk/edge-inspection-runtime}.
+We presented an industrial cyber-physical edge inspection runtime unifying PatchCore-style visual anomaly scores, physical sensor telemetry, temporal policy gating, and SQLite WAL-backed local event spooling. Across the evaluated benchmark workloads, 18 corruption types, and offline evaluation of NASA-informed synthetic degradation proxies, our runtime recorded zero false alarms in the evaluated transient-glitch workload, reduced sustained-defect nuisance re-alerts by \SustainedSuppressionFull{} with bounded detection delay under simulated conditions, and recorded zero observed missing event identifiers during evaluated broker-partition tests within the configured spool capacity under injected forward-pass latency. Suppressing nuisance inspection alarms reduces avoidable manual review; quantifying material scrap, lifecycle carbon impacts, and paired factory validation remains future work. The versioned artifact corresponding to this evaluation is archived at Git release \texttt{\ArtifactReleaseTag{}} (commit \texttt{\GitCommitHash{}}). The release archive, configuration files, and reproduction instructions are available at: \url{https://github.com/sengarutk/edge-inspection-runtime}.
 
 % ============================================================
 % Balance End Matter
