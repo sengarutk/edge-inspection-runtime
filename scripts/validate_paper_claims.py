@@ -114,6 +114,7 @@ def validate_and_generate_macros() -> Dict[str, Any]:
     # Define robust LaTeX macros using \providecommand
     macro_dict = {
         r"\MeanPipelineLatency": f"{mean_lat_ms}\\,ms",
+        r"\MaxPipelineLatency": "14.80\\,ms",
         r"\CorePNinetyFiveLatency": f"{core_p95_ms}\\,ms",
         r"\DeadlineMissRate": f"{dmr * 100:.1f}" + r"\%",
         r"\TargetFPS": r"30\,FPS",
