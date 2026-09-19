@@ -29,20 +29,15 @@
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{5}
 
-\setlength{\textfloatsep}{4.5pt plus 1.5pt minus 1pt}
-\setlength{\dbltextfloatsep}{4.5pt plus 1.5pt minus 1pt}
+\setlength{\textfloatsep}{5pt plus 2pt minus 1pt}
+\setlength{\dbltextfloatsep}{5pt plus 2pt minus 1pt}
 \setlength{\floatsep}{3pt plus 1pt minus 1pt}
 \setlength{\dblfloatsep}{3pt plus 1pt minus 1pt}
-\setlength{\abovecaptionskip}{2.5pt plus 1pt minus 1pt}
-\setlength{\belowcaptionskip}{2.5pt plus 1pt minus 1pt}
+\setlength{\abovecaptionskip}{3pt plus 1pt minus 1pt}
+\setlength{\belowcaptionskip}{3pt plus 1pt minus 1pt}
 \setlength{\abovedisplayskip}{1.5pt plus 0.5pt minus 0.5pt}
 \setlength{\belowdisplayskip}{1.5pt plus 0.5pt minus 0.5pt}
-\setlength{\abovedisplayshortskip}{0.5pt plus 0.5pt minus 0.5pt}
-\setlength{\belowdisplayshortskip}{0.5pt plus 0.5pt minus 0.5pt}
 \def\IEEEbibitemsep{0.5pt plus 0.5pt}
-
-% Balance the two columns on the final page at Reference [5]
-\IEEEtriggeratref{5}
 
 \begin{document}
 
@@ -131,29 +126,6 @@ Experiments execute multi-seed repetitions ($N_{\mathrm{seeds}} = 3$, seeds $[17
 \subsection{Trace-Replay Protocol and Proxy Scope}
 Offline trace evaluation exercises the telemetry interface through two NASA-informed synthetic degradation proxies: (i)~an IMS-informed synthetic bearing proxy and (ii)~a C-MAPSS-informed synthetic turbofan proxy (one 600-step trace per source at 30\,FPS). The protocol specifies: (1)~\textbf{Warmup Window:} $T_{\mathrm{warm}} = 50$ samples ($1.67$\,s) for baseline calibration without alert emission; (2)~\textbf{Failure Onset \& Routing Recall:} onset is defined at Step 420 (bearing vibration reaches $0.80\,g$) and Step 390 (turbofan temperature reaches $66.0^{\circ}\mathrm{C}$), measuring successful escalation or review triage within $\Delta_{\max} = 15$ frames; and (3)~\textbf{Pre-fault Alerts:} emitted review or high-severity events prior to scripted onset ($\mathrm{FA/hr} = (\mathrm{FA\_Count} / T_{\mathrm{pre\_fault\_sec}}) \times 3600$). Cross-modal dynamics evaluate runtime policy logic rather than factory generalization.
 
-\begin{table}[!t]
-    \centering
-    \small
-    \renewcommand{\arraystretch}{0.95}
-    \setlength{\tabcolsep}{0.5pt}
-    \caption{Offline Replay Behavior on NASA-Informed Synthetic Proxies (One 600-Step Trace; Recall Evaluated Within 15 Frames of Onset).}
-    \label{tab:real_trace_results}
-    \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
-        \toprule
-        \textbf{Synthetic proxy} & \textbf{Policy} & \textbf{Pre-fault} $\downarrow$ & \textbf{Recall} $\uparrow$ & \textbf{Delay (s)} $\downarrow$ \\
-        \midrule
-        IMS bearing & BASELINE & 180.0 & 100.0\% & 0.00 \\
-        (NASA IMS) & FULL\_POLICY & \IMSFAFull{} & \IMSActionableRoutingRecall{} & 0.10 \\
-        \midrule
-        C-MAPSS turbofan & BASELINE & 165.0 & 100.0\% & 0.00 \\
-        (NASA C-MAPSS) & FULL\_POLICY & \CMAPSSFAFull{} & \CMAPSSActionableRoutingRecall{} & 0.10 \\
-        \bottomrule
-    \end{tabular*}
-    \vskip 1pt
-    {\scriptsize Normalized from one 600-step (20.0\,s) proxy trace per source; denotes compatibility indicators rather than observed long-horizon factory rates.\par}
-\end{table}
-
-
 \subsection{Operational Metric Definitions}
 A false alarm is an emitted \texttt{REVIEW\_REQUIRED} or \texttt{HIGH\_SEVERITY} decision during a nominal interval. A nuisance re-alert is an additional decision emitted after the first valid alert for the same sustained incident. Event reduction is relative to baseline ($R = 1 - \mathrm{Rate}_{\mathrm{pol}}/\mathrm{Rate}_{\mathrm{base}}$). Overload is the fraction of rolling review windows exceeding modeled capacity ($\mu = 60$~reviews/hr). Actionable routing recall measures scripted defects routed to escalation or review within $\Delta_{\max} = 15$ frames of onset. Emitted rates scale from 300-cycle (10.0\,s) runs to events/hour, representing scenario-normalized indicators rather than long-horizon factory rates.
 
@@ -161,18 +133,10 @@ A false alarm is an emitted \texttt{REVIEW\_REQUIRED} or \texttt{HIGH\_SEVERITY}
 \section{Operational Results and Trade-Offs}
 % ============================================================
 
-% Wide Floats: Figure 1 and Table I positioned naturally in Section IV
-\begin{figure*}[!t]
-    \centering
-    \includegraphics[width=0.49\textwidth,height=1.30in,keepaspectratio]{pareto_tradeoff.pdf}\hfill
-    \includegraphics[width=0.49\textwidth,height=1.30in,keepaspectratio]{queue_workload_analysis.pdf}
-    \caption{Operational reliability and operator-workload analysis: (a) trade-off between false alarm rate and mean detection delay across policy modes; (b) operator-triage station utilization and wait time under $M/M/1$ queueing analysis. Shaded regions denote unstable queuing ($\rho \ge 1.0$) exceeding operator triage capacity ($\mu = 60$~reviews/hr).}
-    \label{fig:pareto_queue}
-\end{figure*}
-
+% TABLE I: Primary Ablation Study
 \begin{table*}[!t]
     \centering
-    \renewcommand{\arraystretch}{0.82}
+    \renewcommand{\arraystretch}{0.88}
     \caption{Ablation Study Across 8 Policy Variants and 6 Industrial Workload Scenarios. Alarm and re-alert rates report mean and 95\% bootstrap confidence intervals ($B=2{,}000$ resamples with run-level units); other metrics report aggregate point estimates. Suppression/reduction is relative to baseline ($R = 1 - \mathrm{Rate}_{\mathrm{pol}}/\mathrm{Rate}_{\mathrm{base}}$) and is undefined (N/A) when baseline rate is zero.}
     \label{tab:ablation_results}
     \resizebox{\textwidth}{!}{%
@@ -222,17 +186,48 @@ A false alarm is an emitted \texttt{REVIEW\_REQUIRED} or \texttt{HIGH\_SEVERITY}
 
 Table~\ref{tab:ablation_results} summarizes the 8-policy ablation across tested scenarios. In transient glitches, \texttt{BASELINE} triggers 120 false alarms/hr (100\% operator overload), while \texttt{EMA\_KOFN} and \texttt{FULL\_POLICY} achieve observed 100.0\% suppression; intermediate ablations also eliminate alarms here, indicating this scenario exercises sliding-window persistence. Under sustained defects, \texttt{FULL\_POLICY} suppresses nuisance re-triggers by \SustainedSuppressionFull{}, bounding alert volume to 12.0 alarms/hr with \SustainedMedianDelay{}-frame delay while preserving \SustainedIncidentRoutingRecall{} actionable incident routing recall ($\Delta_{\max} = 15$ frames). An 8-case policy suite verified rule execution across operational regimes.
 
+% FIGURE 1: Full-width Pareto and Queue Workload Analysis
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.49\textwidth]{pareto_tradeoff.pdf}\hfill
+    \includegraphics[width=0.49\textwidth]{queue_workload_analysis.pdf}
+    \caption{Operational reliability and operator-workload analysis: (a) trade-off between false alarm rate and mean detection delay across policy modes; (b) operator-triage station utilization and wait time under $M/M/1$ queueing analysis. Shaded regions denote unstable queuing ($\rho \ge 1.0$) exceeding operator triage capacity ($\mu = 60$~reviews/hr).}
+    \label{fig:pareto_queue}
+\end{figure*}
+
 Fig.~\ref{fig:pareto_queue}(a) illustrates the trade-off between false alarm rate and detection delay, where \texttt{FULL\_POLICY} achieves the lowest observed nuisance re-alert rate at a bounded 3.0-frame delay. Fig.~\ref{fig:pareto_queue}(b) models triage queue dynamics under an $M/M/1$ queue~\cite{shortle2018fundamentals} with service capacity $\mu = 60$~reviews/hr ($\sim$1\,min per triage review). Each review or un-cooldowned alert is an arrival. For $\lambda < \mu$, utilization is $\rho = \lambda / \mu$ and expected wait is $W_q = \lambda / [\mu(\mu - \lambda)]$; no steady state exists for $\lambda \ge \mu$. At arrival rate $\lambda = 12$~reviews/hr, \texttt{FULL\_POLICY} bounds utilization to $\rho = 0.20$ ($W_q = 0.25$\,min), whereas baselines exceed station capacity ($\rho \ge 1.0$), entering unstable backlog growth.
 
 \begin{figure}[!t]
     \centering
-    \includegraphics[width=\columnwidth,height=1.20in,keepaspectratio]{decision_attribution_per_scenario.pdf}
+    \includegraphics[width=\columnwidth,height=1.35in,keepaspectratio]{decision_attribution_per_scenario.pdf}
     \caption{Decision-reason attribution for \texttt{FULL\_POLICY}. Bars show fraction of non-nominal decisions assigned to each terminal reason in inspection-policy workloads and the broker-partition stress test.}
     \label{fig:decision_attribution}
 \end{figure}
 
 Fig.~\ref{fig:decision_attribution} presents granular decision attribution. Real defects are promptly escalated by multi-modal confirmation, while transient disturbances are suppressed by optical clarity gating and $k$-of-$N$ persistence.
 
+% TABLE II: NASA-Informed Offline Replay
+\begin{table}[!t]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.02}
+    \setlength{\tabcolsep}{0.3pt}
+    \caption{Offline Replay Behavior on NASA-Informed Synthetic Proxies (One 600-Step Trace; Recall Evaluated Within 15 Frames of Onset).}
+    \label{tab:real_trace_results}
+    \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
+        \toprule
+        \textbf{Synthetic proxy} & \textbf{Policy} & \textbf{Pre-fault} $\downarrow$ & \textbf{Recall} $\uparrow$ & \textbf{Delay (s)} $\downarrow$ \\
+        \midrule
+        IMS bearing & BASELINE & 180.0 & 100.0\% & 0.00 \\
+        (NASA IMS) & FULL\_POLICY & \IMSFAFull{} & \IMSActionableRoutingRecall{} & 0.10 \\
+        \midrule
+        C-MAPSS turbofan & BASELINE & 165.0 & 100.0\% & 0.00 \\
+        (NASA C-MAPSS) & FULL\_POLICY & \CMAPSSFAFull{} & \CMAPSSActionableRoutingRecall{} & 0.10 \\
+        \bottomrule
+    \end{tabular*}
+    \vskip 1pt
+    {\scriptsize Normalized from one 600-step (20.0\,s) proxy trace per source; denotes compatibility indicators rather than observed long-horizon factory rates.\par}
+\end{table}
 
 Table~\ref{tab:real_trace_results} reports behavior under two NASA-informed synthetic proxies, exercising policy logic without constituting external factory validation. Across both proxy traces, \texttt{FULL\_POLICY} preserved actionable routing under the onset window while suppressing baseline pre-fault emissions from $\ge 165$/hr to \IMSFAFull{}/hr.
 
@@ -259,6 +254,8 @@ Quantifying short-duration defect recall, defect collisions, misleading sensor t
 % References
 % ============================================================
 \bibliographystyle{IEEEtran}
+\IEEEtriggeratref{6}
+\IEEEtriggeratref{5}
 \bibliography{references}
 
 \end{document}
