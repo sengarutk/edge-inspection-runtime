@@ -1,0 +1,27 @@
+{
+  "system": {
+    "os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "cpu_count_logical": 16,
+    "cpu_count_physical": 8,
+    "total_ram_gb": 11.54
+  },
+  "runtime_versions": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "sqlite": "3.45.1"
+  },
+  "experimental_seeds": [
+    17,
+    23,
+    41
+  ],
+  "workload_calibration": {
+    "sampling_rate_fps": 30,
+    "line_cycle_target_ms": 33.333,
+    "injected_forward_pass_ms": "8.20 +/- 0.25",
+    "live_patchcore_forward_pass": false,
+    "streaming_score_input": true,
+    "spooler_queue_capacity": 50000,
+    "spooler_stress_tested_events": 120
+  }
+}
