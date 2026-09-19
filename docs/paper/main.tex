@@ -25,7 +25,7 @@
 \renewcommand{\textfraction}{0.05}
 \renewcommand{\floatpagefraction}{0.85}
 
-\setcounter{topnumber}{1}
+\setcounter{topnumber}{3}
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{5}
 
@@ -169,7 +169,7 @@ Inspection events are processed through a seven-stage priority cascade:
 \noindent\textbf{Parameterization and Failure Bounds:} Constants ($\tau_{\mathrm{high}} = 0.80$, $k = 4$, $N = 10$, $\tau_{\mathrm{div}} = 0.45$, $T_{\mathrm{cool}} = 15$) were calibrated on representative baselines; formal sensitivity sweeps remain future work. While cooldown suppresses redundant re-alerts for sustained defects, triggers within $T_{\mathrm{cool}}$ frames aggregate under the active incident ID, trading multi-incident discrimination for operator load suppression. Furthermore, $k$-of-$N$ persistence imposes duration and amplitude bounds: brief defects may fail to accumulate $k$ smoothed exceedances within $N$ frames and avoid escalation. Lastly, sensor tests evaluate drift and dropouts, but do not model adversarial or correlated noise falsely corroborating optical artifacts.
 
 \subsection{Incident Refractory Cooldown Finite-State Machine}
-Upon confirming a defect, an incident state machine enters \texttt{ALERT\_ACTIVE} for refractory cooldown ($T_{\mathrm{cool}} = 15$ frames). Redundant triggers aggregate under the active incident identifier, eliminating alarm floods.
+Upon confirming a defect event, an incident state machine transitions to \texttt{ALERT\_ACTIVE} and initiates an incident refractory cooldown period of length $T_{\mathrm{cool}} = 15$ frames. Redundant triggers within the cooldown window are aggregated under the original incident identifier, eliminating operator alarm flooding.
 
 \subsection{Local Durable Event Spooling}
 Here, ``durable'' denotes file-backed retention across the evaluated broker-partition and process-recovery testbed. It does not imply certified durability under sudden host power loss, physical media damage, or filesystem corruption; unacknowledged events remain buffered in the local circular queue up to capacity $M_{\mathrm{max}}$.
@@ -177,10 +177,6 @@ Here, ``durable'' denotes file-backed retention across the evaluated broker-part
 % ============================================================
 \section{Experimental Methodology and Rigor}
 % ============================================================
-
-% TABLE I SCHEDULED: Declared here so it lands cleanly at the top of Page 3
-
-
 We benchmark the runtime across \TotalWorkloadScenarios{} standardized workloads: (1) nominal operation, (2) transient optical flickers, (3) sustained defects, (4) optical blur degradation, (5) sensor drift and channel dropout, and (6) process distribution shift. A separate broker-partition stress test evaluates spooler retention and is analyzed independently of policy logic.
 
 \subsection{Statistical Evaluation Protocol}
@@ -195,34 +191,32 @@ A false alarm is an emitted \texttt{REVIEW\_REQUIRED} or \texttt{HIGH\_SEVERITY}
 % ============================================================
 \section{Operational Results and Trade-Offs}
 % ============================================================
-Table~\ref{tab:ablation_results} summarizes the 8-policy ablation across tested scenarios. In transient glitches, \texttt{BASELINE} triggers 120 false alarms/hr (100\% operator overload), while \texttt{EMA\_KOFN} and \texttt{FULL\_POLICY} achieve observed 100.0\% suppression; intermediate ablations also eliminate alarms here, indicating this scenario exercises sliding-window persistence. Under sustained defects, \texttt{FULL\_POLICY} suppresses nuisance re-triggers by \SustainedSuppressionFull{}, bounding alert volume to 12.0 alarms/hr with \SustainedMedianDelay{}-frame delay while preserving \SustainedIncidentRoutingRecall{} actionable incident routing recall ($\Delta_{\max} = 15$ frames). An 8-case policy test suite verified deterministic rule execution across all operational regimes.
+Table~\ref{tab:ablation_results} summarizes the 8-policy ablation across tested scenarios. In transient glitches, \texttt{BASELINE} triggers 120 false alarms/hr (100\% operator overload), while \texttt{EMA\_KOFN} and \texttt{FULL\_POLICY} achieve observed 100.0\% suppression; intermediate ablations also eliminate alarms here, indicating this scenario exercises sliding-window persistence. Under sustained defects, \texttt{FULL\_POLICY} suppresses nuisance re-triggers by \SustainedSuppressionFull{}, bounding alert volume to 12.0 alarms/hr with \SustainedMedianDelay{}-frame delay while preserving \SustainedIncidentRoutingRecall{} actionable incident routing recall ($\Delta_{\max} = 15$ frames). An 8-case policy suite verified rule execution across operational regimes.
 
 Fig.~\ref{fig:pareto_queue}(a) illustrates the trade-off between false alarm rate and detection delay, where \texttt{FULL\_POLICY} achieves the lowest observed nuisance re-alert rate at a bounded 3.0-frame delay.
 
-\newpage Fig.~\ref{fig:pareto_queue}(b) models triage queue dynamics under an $M/M/1$ queue~\cite{shortle2018fundamentals} with service capacity $\mu = 60$~reviews/hr ($\sim$1\,min per triage review). Each review or un-cooldowned alert is an arrival. For $\lambda < \mu$, utilization is $\rho = \lambda / \mu$ and expected wait is $W_q = \lambda / [\mu(\mu - \lambda)]$; no steady state exists for $\lambda \ge \mu$. At arrival rate $\lambda = 12$~reviews/hr, \texttt{FULL\_POLICY} bounds utilization to $\rho = 0.20$ ($W_q = 0.25$\,min), whereas baselines exceed station capacity ($\rho \ge 1.0$), entering unstable backlog growth.
+\newpage
+Fig.~\ref{fig:pareto_queue}(b) models triage queue dynamics under an $M/M/1$ queue~\cite{shortle2018fundamentals} with service capacity $\mu = 60$~reviews/hr ($\sim$1\,min per triage review). Each review or un-cooldowned alert is an arrival. For $\lambda < \mu$, utilization is $\rho = \lambda / \mu$ and expected wait is $W_q = \lambda / [\mu(\mu - \lambda)]$; no steady state exists for $\lambda \ge \mu$. At arrival rate $\lambda = 12$~reviews/hr, \texttt{FULL\_POLICY} bounds utilization to $\rho = 0.20$ ($W_q = 0.25$\,min), whereas baselines exceed station capacity ($\rho \ge 1.0$), entering unstable backlog growth.
 
-% FIGURE 2: Placed cleanly in Section IV
-\setcounter{topnumber}{1}
-\begin{figure}[!t]
+Fig.~\ref{fig:decision_attribution} presents granular decision attribution. Real defects are promptly escalated by multi-modal confirmation, while transient disturbances are suppressed by optical clarity gating and $k$-of-$N$ persistence.
+
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\columnwidth,height=1.25in,keepaspectratio]{decision_attribution_per_scenario.pdf}
     \caption{Decision-reason attribution for \texttt{FULL\_POLICY}. Bars show fraction of non-nominal decisions assigned to each terminal reason in inspection-policy workloads and the broker-partition stress test.}
     \label{fig:decision_attribution}
 \end{figure}
 
-Fig.~\ref{fig:decision_attribution} presents granular decision attribution. Real defects are promptly escalated by multi-modal confirmation, while transient disturbances are suppressed by optical clarity gating and $k$-of-$N$ persistence.
-
-% TABLE II: Placed cleanly in Section IV
-\begin{table}[!t]
+\begin{table}[htbp]
     \centering
     \small
     \renewcommand{\arraystretch}{1.02}
-    \setlength{\tabcolsep}{0.5pt}
+    \setlength{\tabcolsep}{1.5pt}
     \caption{Offline Replay Behavior on NASA-Informed Synthetic Proxies (One 600-Step Trace; Recall Evaluated Within 15 Frames of Onset).}
     \label{tab:real_trace_results}
     \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
         \toprule
-        \textbf{Synthetic proxy} & \textbf{Policy} & \textbf{Pre-fault} $\downarrow$ & \textbf{Recall} $\uparrow$ & \textbf{Delay (s)} $\downarrow$ \\
+        \textbf{Synthetic proxy} & \textbf{Policy} & \textbf{Pre-fault} $\downarrow$ & \textbf{Recall} $\uparrow$ & \textbf{Delay} $\downarrow$ \\
         \midrule
         IMS bearing & BASELINE & 180.0 & 100.0\% & 0.00 \\
         (NASA IMS) & FULL\_POLICY & \IMSFAFull{} & \IMSActionableRoutingRecall{} & 0.10 \\
